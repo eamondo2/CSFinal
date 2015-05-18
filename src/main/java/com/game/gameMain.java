@@ -23,6 +23,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created by eamon on 5/17/2015.
  * The majority of the GLFW code is lifted from the lwjgl getting started guide, as GLFW is hard.
  */
+
+
+//TODO: Make lighting a thing. Like walls with pools of light. Dunno.
+
+
 public class gameMain {
 	//Where to begin?
 	//beginnings of lwjgl implementation.
