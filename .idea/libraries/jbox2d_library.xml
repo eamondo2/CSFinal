@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="jbox2d-library">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../jbox2d-jbox2d-2.3.0-BETA/jbox2d-library" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../jbox2d-jbox2d-2.3.0-BETA/jbox2d-library/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../jbox2d-jbox2d-2.3.0-BETA/jbox2d-library/src/test/java" />
+    </SOURCES>
+  </library>
+</component>

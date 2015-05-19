@@ -1,6 +1,6 @@
 package com.game.structure;
 
-import com.sun.javafx.geom.Vec2d;
+import com.game.math.Vector3f;
 
 import java.util.ArrayList;
 
@@ -10,16 +10,19 @@ import java.util.ArrayList;
 public class mesh {
 	//this will be the class used to store the mesh of points for all objects
 	//what data type to use to store the points? - Array of Vec2d objects.
-	private Vec2d center;
-	private ArrayList<Vec2d> mesh;
+
+
+	private Vector3f center;
+	private ArrayList<Vector3f> mesh;
 
 
 	public mesh() {
 		//Instantiates a mesh.
 	}
 
-	public mesh(String file, Vec2d location) {
+	public mesh(String file, Vector3f location) {
 		//instantiates mesh from file
+
 
 	}
 
@@ -28,10 +31,10 @@ public class mesh {
 	All the points are shifted with a loop, in order to shift the shape to the right location.
 
 	 */
-	public ArrayList<Vec2d> loadMesh(String file) {
+	public ArrayList<Vector3f> loadMesh(String file) {
 		//loads from file
 		//mesh files will be comma and parenthesis separated point pairs.
-		ArrayList<Vec2d> out = new ArrayList<Vec2d>();
+		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
 
 
 		return out;
