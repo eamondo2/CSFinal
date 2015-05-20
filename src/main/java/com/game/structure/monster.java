@@ -53,5 +53,16 @@ public class monster implements actor {
 		return false;
 	}
 
+    @Override
+    public void setPosition(Vector3f vIn) {
+
+    }
+
+
+    @Override
+    public mesh getAABB() {
+        return null;
+    }
+
 
 }

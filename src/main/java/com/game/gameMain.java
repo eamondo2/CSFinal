@@ -4,9 +4,9 @@ package com.game;
 
 //imports
 
-import com.game.math.Vector3f;
-import com.game.structure.mesh;
-import com.game.structure.monster;
+import com.game.structure.floor;
+import com.game.structure.mainCharacter;
+import com.game.structure.obj2D;
 import com.game.util.inputHandler;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -34,15 +34,16 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
-    int WIDTH = 1000;
-    int HEIGHT = 1000;
+    mainCharacter c;
+    int WIDTH = 700;
+    int HEIGHT = 700;
     //Where to begin?
 	//beginnings of lwjgl implementation.
 	private GLFWErrorCallback errorCall;
     private float rot = 0;
     private inputHandler keyCall;
     private long window;
-    private ArrayList<monster> creatures;
+    private ArrayList<obj2D> renderList;
 
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
@@ -53,7 +54,7 @@ public class gameMain {
 
 	public void run() {
 		System.out.println("HI THERE " + Sys.getVersion());
-        creatures = new ArrayList<monster>();
+        renderList = new ArrayList<obj2D>();
 
 		try {
 			init();
@@ -112,11 +113,12 @@ public class gameMain {
     }
 
     public void worldSetup() {
-        mesh m = new mesh("polyShape.obj", new Vector3f(0, 0, 0));
-        monster mon = new monster(m, new Vector3f(0, 0, 0), "null");
-        monster b = new monster("test.obj", new Vector3f(0, 0, 0), "null");
-        //creatures.add(mon);
-        creatures.add(b);
+        floor f = new floor();
+        renderList.add(f);
+        c = new mainCharacter();
+        //renderList.add(c);
+
+
 
 
     }
@@ -147,7 +149,7 @@ public class gameMain {
         //mid
 
 
-        for (monster m : creatures) m.render();
+        for (obj2D m : renderList) m.render();
         //fore
 
     }
@@ -164,10 +166,8 @@ public class gameMain {
 
         //logic
 
+
         //transforms
-        //glLoadIdentity();
-        //glTranslatef(0,0,-.5f);
-        glRotatef(5, 1, 0, 0);
 
 
         //physics concerns go here

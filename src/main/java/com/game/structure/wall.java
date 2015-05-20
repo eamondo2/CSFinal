@@ -30,4 +30,15 @@ public class wall implements object {
 	public boolean isPlayer() {
 		return false;
 	}
+
+    @Override
+    public void setPosition(Vector3f vIn) {
+
+    }
+
+
+    @Override
+    public mesh getAABB() {
+        return null;
+    }
 }

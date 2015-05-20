@@ -19,5 +19,10 @@ public interface obj2D {
 
 	boolean isPlayer();
 
+    void setPosition(Vector3f vIn);
+
+    mesh getAABB();
+
+
 
 }

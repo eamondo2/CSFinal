@@ -18,9 +18,11 @@ public class mesh {
 	//what data type to use to store the points? - Array of Vec2d objects.
 
 
-	private Vector3f center;
-	private ArrayList<Vector3f> meshVerts;
-	private ArrayList<Vector3f> meshNorms;
+    private Vector3f position;
+
+
+    private ArrayList<Vector3f> meshVerts;
+    private ArrayList<Vector3f> meshNorms;
 
 	public mesh() {
 		//Instantiates a mesh.
@@ -29,6 +31,7 @@ public class mesh {
 	public mesh(String file, Vector3f location) {
 		//instantiates mesh from file
 		loadMesh(file);
+        this.position = location;
 
 
 	}
@@ -94,6 +97,30 @@ public class mesh {
 		}
 		glEnd();
 	}
+
+    public ArrayList<Vector3f> getMeshVerts() {
+        return this.meshVerts;
+    }
+
+    public void setMeshVerts(ArrayList<Vector3f> meshVerts) {
+        this.meshVerts = meshVerts;
+    }
+
+    public ArrayList<Vector3f> getMeshNorms() {
+        return this.meshNorms;
+    }
+
+    public void setMeshNorms(ArrayList<Vector3f> meshNorms) {
+        this.meshNorms = meshNorms;
+    }
+
+    public Vector3f getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
 
 
 
