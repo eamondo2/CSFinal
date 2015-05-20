@@ -33,7 +33,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
-    mainCharacter c;
+
     int WIDTH = 700;
     int HEIGHT = 700;
     //Where to begin?
@@ -42,7 +42,7 @@ public class gameMain {
     private float rot = 0;
     private inputHandler keyCall;
     private long window;
-    private ArrayList<obj2D> renderList;
+
 
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
@@ -54,7 +54,7 @@ public class gameMain {
 
 	public void run() {
 		System.out.println("HI THERE " + Sys.getVersion());
-        renderList = new ArrayList<obj2D>();
+
 
 		try {
 			init();
@@ -113,8 +113,7 @@ public class gameMain {
     }
 
     public void worldSetup() {
-        floor f = new floor("floor.obj", new Vector3f(0,0,0), "null");
-        renderList.add(f);
+
 
 
 
@@ -148,7 +147,7 @@ public class gameMain {
         //mid
 
 
-        for (obj2D m : renderList) m.render();
+
         new axes().render();
         //fore
 
