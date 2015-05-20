@@ -1,24 +1,12 @@
 package com.game.structure;
 
-import com.game.math.Vector3f;
-
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public class axes implements obj2D {
-	@Override
-	public mesh getMesh() {
-		return null;
-	}
+public class axes {
 
-	@Override
-	public Vector3f getCenter() {
-		return null;
-	}
-
-	@Override
 	public void render() {
 		glBegin(1);
 		glColor3f(0, .5f, 0);
@@ -33,24 +21,5 @@ public class axes implements obj2D {
 		glEnd();
 
 	}
-
-	@Override
-	public boolean isStatic() {
-		return false;
-	}
-
-	@Override
-	public boolean isPlayer() {
-		return false;
-	}
-
-	@Override
-	public void setPosition(Vector3f vIn) {
-
-	}
-
-	@Override
-	public AABB2d getAABB() {
-		return null;
-	}
 }
+
