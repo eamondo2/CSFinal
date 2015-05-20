@@ -1,12 +1,8 @@
-# Blender v2.73 (sub 0) OBJ File: ''
-# www.blender.org
-mtllib floor.mtl
-o Plane_Plane.001
-v -7.832347 -0.464834 0.381456
-v 7.607048 -0.464834 0.381456
-v -7.832347 0.227485 0.381456
-v 7.607048 0.227485 0.381456
+OBJTYPE 6
+COLOR 0 1 0
+v -50 -3 0
+v -50 0 0
+v 50 0 0
+v 50 -3 0
 
-usemtl None
-s off
-f 1 2 4 3
+

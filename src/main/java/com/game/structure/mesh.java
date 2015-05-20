@@ -19,7 +19,8 @@ public class mesh {
 
 
     private Vector3f position;
-
+	private float r = 0, g = 0, b = 0;
+	private int renderType = GL_POLYGON;
 
     private ArrayList<Vector3f> meshVerts;
     private ArrayList<Vector3f> meshNorms;
@@ -32,6 +33,9 @@ public class mesh {
 		//instantiates mesh from file
 		loadMesh(file);
         this.position = location;
+		setPosition(location);
+
+
 
 
 	}
@@ -59,19 +63,32 @@ public class mesh {
 		}
 
 		for (String s : inMesh) {
-			//System.out.println(s);
-			if (s.charAt(0) == 'v' && s.charAt(1) == 'n') {
-				String[] normls = s.split(" ");
-				float x = Float.parseFloat(normls[1]);
-				float y = Float.parseFloat(normls[2]);
-				float z = Float.parseFloat(normls[3]);
-				outNorms.add(new Vector3f(x, y, z));
-			} else if (s.charAt(0) == 'v') {
-				String[] verts = s.split(" ");
-				float x = Float.parseFloat(verts[1]);
-				float y = Float.parseFloat(verts[2]);
-				float z = Float.parseFloat(verts[3]);
-				outVerts.add(new Vector3f(x, y, z));
+			System.out.println(s);
+			if(s.length() >0) {
+				if(s.startsWith("OBJTYPE")){
+					String[] in = s.split(" ");
+					if(in.length > 1) this.renderType = Integer.parseInt(in[1]);
+				}
+				if(s.startsWith("COLOR")){
+					String[] in = s.split(" ");
+					if(in.length > 1){
+						this.r = Float.parseFloat(in[1]); this.g = Float.parseFloat(in[2]); this.b = Float.parseFloat(in[3]);
+					}
+				}
+
+				if (s.charAt(0) == 'v' && s.charAt(1) == 'n') {
+					String[] normls = s.split(" ");
+					float x = Float.parseFloat(normls[1]);
+					float y = Float.parseFloat(normls[2]);
+					float z = Float.parseFloat(normls[3]);
+					outNorms.add(new Vector3f(x, y, z));
+				} else if (s.charAt(0) == 'v') {
+					String[] verts = s.split(" ");
+					float x = Float.parseFloat(verts[1]);
+					float y = Float.parseFloat(verts[2]);
+					float z = Float.parseFloat(verts[3]);
+					outVerts.add(new Vector3f(x, y, z));
+				}
 			}
 		}
 		this.meshNorms = outNorms;
@@ -90,7 +107,8 @@ public class mesh {
 	}
 
 	public void render() {
-		glBegin(GL_POLYGON);
+		glBegin(renderType);
+		glColor3f(r, g, b);
 		for (Vector3f v : meshVerts) {
 			glVertex3f(v.x, v.y, v.z);
 
@@ -121,6 +139,10 @@ public class mesh {
     public void setPosition(Vector3f position) {
         this.position = position;
     }
+
+	public AABB2d getAABB(){
+		return null;
+	}
 
 
 

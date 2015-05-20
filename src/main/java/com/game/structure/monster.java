@@ -60,7 +60,7 @@ public class monster implements actor {
 
 
     @Override
-    public mesh getAABB() {
+    public AABB2d getAABB() {
         return null;
     }
 

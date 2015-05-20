@@ -17,6 +17,7 @@ public class mainCharacter implements actor {
         m = new mesh("player.obj", new Vector3f(0, 0, 0));
         this.force = new Vector3f(0, 0, 0);
         this.position = m.getPosition();
+        this.setPosition(position);
     }
 
 
@@ -65,7 +66,7 @@ public class mainCharacter implements actor {
 	}
 
     @Override
-    public mesh getAABB() {
+    public AABB2d getAABB() {
         return null;
     }
 }

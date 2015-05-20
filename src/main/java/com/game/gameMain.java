@@ -4,9 +4,8 @@ package com.game;
 
 //imports
 
-import com.game.structure.floor;
-import com.game.structure.mainCharacter;
-import com.game.structure.obj2D;
+import com.game.math.Vector3f;
+import com.game.structure.*;
 import com.game.util.inputHandler;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -47,6 +46,7 @@ public class gameMain {
 
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
+        System.out.println(GL_LINE);
 		new gameMain().run();
 
 
@@ -113,10 +113,9 @@ public class gameMain {
     }
 
     public void worldSetup() {
-        floor f = new floor();
+        floor f = new floor("floor.obj", new Vector3f(0,0,0), "null");
         renderList.add(f);
-        c = new mainCharacter();
-        //renderList.add(c);
+
 
 
 
@@ -150,6 +149,7 @@ public class gameMain {
 
 
         for (obj2D m : renderList) m.render();
+        new axes().render();
         //fore
 
     }
@@ -163,6 +163,7 @@ public class gameMain {
         }
         if (inputHandler.keys[GLFW_KEY_A]) glTranslatef(-1, 0, 0);
         if (inputHandler.keys[GLFW_KEY_D]) glTranslatef(1, 0, 0);
+        if(inputHandler.keys[GLFW_KEY_Q]) glRotatef(1.5f, .25f, .75f, 0);
 
         //logic
 

@@ -21,7 +21,7 @@ public interface obj2D {
 
     void setPosition(Vector3f vIn);
 
-    mesh getAABB();
+    AABB2d getAABB();
 
 
 
