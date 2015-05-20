@@ -4,6 +4,9 @@ package com.game;
 
 //imports
 
+import com.game.math.Vector3f;
+import com.game.structure.mesh;
+import com.game.structure.monster;
 import com.game.util.inputHandler;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -12,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
@@ -30,14 +34,15 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
-    int WIDTH = 800;
-    int HEIGHT = 800;
+    int WIDTH = 1000;
+    int HEIGHT = 1000;
     //Where to begin?
 	//beginnings of lwjgl implementation.
 	private GLFWErrorCallback errorCall;
     private float rot = 0;
     private inputHandler keyCall;
     private long window;
+    private ArrayList<monster> creatures;
 
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
@@ -48,6 +53,7 @@ public class gameMain {
 
 	public void run() {
 		System.out.println("HI THERE " + Sys.getVersion());
+        creatures = new ArrayList<monster>();
 
 		try {
 			init();
@@ -105,37 +111,43 @@ public class gameMain {
 
     }
 
-    //handles rendering, dispatches render calls to all objects that need to be rendered.
-    //will have multiple layers for rendering gui/score and the world, and the background
-    //background will be static, and the foreground will be animated. Layering is important, as it does rendering based on layers. Topmost is called last, so GUI last
-    //and bottom called first, so background first.
+    public void worldSetup() {
+        mesh m = new mesh("polyShape.obj", new Vector3f(0, 0, 0));
+        monster mon = new monster(m, new Vector3f(0, 0, 0), "null");
+        monster b = new monster("test.obj", new Vector3f(0, 0, 0), "null");
+        //creatures.add(mon);
+        creatures.add(b);
+
+
+    }
+
+
     public void glSetup() {
-        float ratio;
-        ratio = WIDTH / (float) HEIGHT;
+
         glViewport(0, 0, WIDTH, HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(-ratio, ratio, -1.f, 1.f, 10.f, -10.f);
+        glOrtho(-20, 20, -20, 20, 10.f, -10.f);
+
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        //glTranslatef(0f, 0f, 10f);
+
 
     }
 
+    //handles rendering, dispatches render calls to all objects that need to be rendered.
+    //will have multiple layers for rendering gui/score and the world, and the background
+    //background will be static, and the foreground will be animated. Layering is important, as it does rendering based on layers. Topmost is called last, so GUI last
+    //and bottom called first, so background first.
     public void render() {
         //back
 
 
         //mid
-        glBegin(GL_TRIANGLES);
-        glColor3f(1.f, 0.f, 0.f);
-        glVertex3f(-0.6f, -0.4f, 0.f);
-        glColor3f(0.f, 1.f, 0.f);
-        glVertex3f(0.6f, -0.4f, 0.f);
-        glColor3f(0.f, 0.f, 1.f);
-        glVertex3f(0.f, 0.6f, 0.f);
-        glEnd();
+
+
+        for (monster m : creatures) m.render();
         //fore
 
     }
@@ -153,10 +165,16 @@ public class gameMain {
         //logic
 
         //transforms
-        //glTranslatef(0,0,rot);
-        //rot= (rot<10? (rot+.1f):-rot);
-        //System.out.println(rot);
+        //glLoadIdentity();
+        //glTranslatef(0,0,-.5f);
+        glRotatef(5, 1, 0, 0);
+
+
+        //physics concerns go here
+
+
     }
+
 
     public void loop() {
 		// This line is critical for LWJGL's interoperation with GLFW's
@@ -165,7 +183,11 @@ public class gameMain {
 		// creates the ContextCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GLContext.createFromCurrent();
+
         glSetup();
+
+        worldSetup();
+
         // Set the clear color
 		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 

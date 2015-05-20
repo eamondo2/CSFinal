@@ -17,6 +17,11 @@ public class floor implements object {
 	}
 
 	@Override
+	public void render() {
+
+	}
+
+	@Override
 	public boolean isStatic() {
 		return false;
 	}

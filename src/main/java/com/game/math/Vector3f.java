@@ -22,4 +22,8 @@ public class Vector3f {
         //normalizes this vector
     }
 
+    public String toString() {
+        return (x + " " + y + " " + z);
+    }
+
 }

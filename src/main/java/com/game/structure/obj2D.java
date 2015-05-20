@@ -13,6 +13,8 @@ public interface obj2D {
 
 	Vector3f getCenter();
 
+	void render();
+
 	boolean isStatic();
 
 	boolean isPlayer();
