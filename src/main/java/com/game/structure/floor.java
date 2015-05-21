@@ -51,4 +51,9 @@ public class floor implements rect {
 	public void setPos(Vector3f v) {
 
 	}
+
+	@Override
+	public Vector3f getCenter() {
+		return null;
+	}
 }

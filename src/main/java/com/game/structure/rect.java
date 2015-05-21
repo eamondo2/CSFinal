@@ -27,5 +27,8 @@ public interface rect {
 
 	void setPos(Vector3f v);
 
+	Vector3f getCenter();
+
+
 
 }

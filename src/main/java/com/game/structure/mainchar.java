@@ -3,8 +3,11 @@ package com.game.structure;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.game.util.fileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -17,12 +20,16 @@ public class mainchar implements rect {
 	public String tex;
 
 
+
 	public mainchar(String obj, String tex, Vector3f pos) {
 		this.tex = tex;
-		this.verts = new ArrayList<Vector3f>() {
-			//list out Verts here
+		//load verts from file to arraylist
+		try {
+			this.verts = loadVertFromFile(new File(obj));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		};
 
 	}
 
@@ -65,6 +72,11 @@ public class mainchar implements rect {
 	@Override
 	public void setPos(Vector3f v) {
 
+	}
+
+	@Override
+	public Vector3f getCenter() {
+		return null;
 	}
 
 	public boolean canJump() {

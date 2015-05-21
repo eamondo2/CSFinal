@@ -17,4 +17,12 @@ public class AABB {
 	}
 
 
+	public Vector3f getMTV(AABB other) {
+
+		return null;
+	}
+
+
+
+
 }

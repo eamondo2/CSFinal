@@ -3,8 +3,11 @@ package com.game.structure;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.game.util.fileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -18,8 +21,11 @@ public class obstacle implements rect {
 
 	public obstacle(String obj, String tex, Vector3f pos) {
 		this.tex = tex;
-		this.verts = new ArrayList<Vector3f>() {
-		};
+		try {
+			this.verts = loadVertFromFile(new File(obj));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -60,5 +66,10 @@ public class obstacle implements rect {
 	@Override
 	public void setPos(Vector3f v) {
 
+	}
+
+	@Override
+	public Vector3f getCenter() {
+		return null;
 	}
 }
