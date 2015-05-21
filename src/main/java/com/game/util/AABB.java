@@ -12,12 +12,15 @@ public class AABB {
 	//derived from the verts passed in
 	public Vector3f topLeft;
 	public Vector3f botRight;
+    public Vector3f halfWidths;
+    public Vector3f pos;
 
 	public AABB() {
         this.topLeft = new Vector3f(0, 0, 0);
         this.botRight = new Vector3f(0, 0, 0);
-
-	}
+        this.halfWidths = new Vector3f(0, 0, 0);
+        this.pos = new Vector3f(0, 0, 0);
+    }
 
 
 	public Vector3f getMTV(AABB other) {
@@ -40,6 +43,8 @@ public class AABB {
 
 		this.topLeft = new Vector3f(minx, maxy, 0);
 		this.botRight = new Vector3f(maxx, miny, 0);
+        this.halfWidths = new Vector3f((maxx - minx) / 2, (maxy - miny) / 2, 0);
+        this.pos = new Vector3f((maxx + minx) / 2, (maxy + miny) / 2, 0);
 
 
 	}

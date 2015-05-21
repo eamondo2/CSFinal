@@ -16,23 +16,21 @@ public class Physics {
 
     public static void updatePhysics(ArrayList<rect> physList) {
         for (rect r : physList) {
-            for (rect or : physList) {
-                if (!r.equals(or)) {
-                    System.out.println(r.getName());
-                    //x then y
-                    Vector3f rv = r.getAABB().topLeft;
-                    Vector3f rv2 = r.getAABB().botRight;
-                    Vector3f ov = or.getAABB().topLeft;
-                    Vector3f ov2 = or.getAABB().botRight;
+            if (r.isCharacter()) {
+                for (rect or : physList) {
+                    if (!r.equals(or)) {
+                        System.out.println(r.getName() + " against " + or.getName());
+                        if (collides(r.getAABB(), or.getAABB())) {
+                            System.out.println("HAIL JESUS");
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                    boolean xCollides = (Intersects(rv.x, rv2.x, ov.x, ov2.x));
-                    boolean yCollides = (Intersects(rv.y, rv2.y, ov.y, ov2.y));
-                    if (xCollides && yCollides) {
-                        System.out.println("FUCKYES");
-                        float x = v.x;
+
                     }
-
-
                 }
             }
         }
@@ -40,21 +38,35 @@ public class Physics {
 
     }
 
-    public static boolean Intersects(float a, float b, float c, float d) {
-        if (a < c && c < b) {
-            //right edge
-            //a-b contains c
-            return true;
-        }
-        if (a < d && d < b) {
-            //left edge
-            //a-b contains d
-            return true;
-        }
-        return a < c && c < b && a > d && d < b;
+    public static boolean Intersects(rect a, rect b) {
 
 
+        return false;
     }
+
+    public static boolean collides(AABB a, AABB b) {
+
+        if (Math.abs(a.pos.x - b.pos.x) < a.halfWidths.x + b.halfWidths.x) {
+            if (Math.abs(a.pos.y - b.pos.y) < a.halfWidths.y + b.halfWidths.y) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    /*
+    public static boolean inside(AABB a, Vector2Float b)
+    {
+        if(Math.abs(a.pos.x - b.x) < a.size.x)
+        {
+            if(Math.abs(a.pos.y - b.y) < a.size.y)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    */
 
     public void findEdgeNormals(rect r) {
 

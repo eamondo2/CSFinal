@@ -34,7 +34,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
-	public ArrayList<rect> renderList;
+    public int counter = 0;
+    public ArrayList<rect> renderList;
 	public ArrayList<rect> physList;
 	public mainchar character;
 	int WIDTH = 700;
@@ -118,9 +119,9 @@ public class gameMain {
     public void worldSetup() {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
-        character = new mainchar("assets/char.obj", "null", new Vector3f(0, 2, 0));
+        character = new mainchar("assets/char.obj", "null", new Vector3f(-15, 2, 0));
         floor f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
-        obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0));
+        obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 1);
         renderList.add(o);
 	    renderList.add(f);
 	    renderList.add(character);
@@ -162,6 +163,19 @@ public class gameMain {
 
     //handles frame to frame logic
     public void update() {
+        //put more objects in
+        counter = (counter < 100 ? counter + 1 : 0);
+        if (Math.random() * 2 + counter > 100) {
+            float f = (float) (Math.random() * 1);
+            if (f < .3) f += .5;
+            else if (f > 2) f -= 1;
+            obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(20, 1, 0), f, (float) ((Math.random() * 1.5)));
+            renderList.add(o);
+            physList.add(o);
+        }
+
+
+
         //input
         if (inputHandler.keys[GLFW_KEY_ESCAPE]) {
             glfwSetWindowShouldClose(window, GL_TRUE);
@@ -175,8 +189,8 @@ public class gameMain {
 		    character.jump();
 	    }
 
-	    System.out.println(character.speed);
-	    System.out.println(character.bBox.botRight.y);
+        System.out.println("SPEED " + character.speed);
+        System.out.println(character.bBox.botRight.y);
 	    //logic
 
 
@@ -184,7 +198,18 @@ public class gameMain {
 
 
         //physics concerns go here
-        for (rect r : physList) r.update();
+        ArrayList<rect> trash = new ArrayList<rect>();
+        for (rect r : physList) {
+            if (r.getAABB().botRight.x < -30) {
+                trash.add(r);
+                System.out.println("TRASHED");
+            }
+            r.update();
+        }
+        for (rect r : trash) {
+            physList.remove(r);
+            renderList.remove(r);
+        }
         Physics.updatePhysics(physList);
 
     }

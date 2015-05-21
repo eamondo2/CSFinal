@@ -14,14 +14,17 @@ import static org.lwjgl.opengl.GL11.*;
  * Created by eamon_000 on 5/20/2015.
  */
 public class obstacle implements rect {
-
-	public ArrayList<Vector3f> verts;
+    public float leftSpeed = 0;
+    public float blue = 1;
+    public ArrayList<Vector3f> verts;
 	public AABB bBox;
 	public String tex;
 	public Vector3f pos = new Vector3f(0, 0, 0);
 
-	public obstacle(String obj, String tex, Vector3f pos) {
-		this.tex = tex;
+    public obstacle(String obj, String tex, Vector3f pos, float leftSpeed, float blue) {
+        this.blue = blue;
+        this.leftSpeed = leftSpeed;
+        this.tex = tex;
 		try {
 			this.verts = loadVertFromFile(new File(obj));
 		} catch (IOException e) {
@@ -41,8 +44,8 @@ public class obstacle implements rect {
 
 	@Override
 	public void render() {
-		glColor3f(0, 0, 1);
-		glBegin(GL_QUADS);
+        glColor3f(0, 0, blue);
+        glBegin(GL_QUADS);
 		for (Vector3f v : verts) {
 			glVertex3f(v.x, v.y, v.z);
 		}
@@ -53,7 +56,9 @@ public class obstacle implements rect {
 	public void update() {
         //move left
         this.pos = this.getCenter();
-        this.setPos(this.pos.x - .5f, this.pos.y, this.pos.z);
+        this.setPos(this.pos.x - leftSpeed, this.pos.y, this.pos.z);
+        this.bBox.updateAABB(this.verts);
+
 
 
 

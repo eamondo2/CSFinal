@@ -64,6 +64,7 @@ public class mainchar implements rect {
         if bottom above 0, dont set position, add gravity, update position based on speed. disallow jumping
 
          */
+        this.pos.y = (this.pos.y < .1 ? 0 : this.pos.y);
         this.bBox.updateAABB(this.verts);
         Vector3f bottomRight = this.getAABB().botRight;
         float x = bottomRight.x, y = bottomRight.y;
@@ -86,18 +87,13 @@ public class mainchar implements rect {
             this.touchingfloor = false;
         }
         //add gravity
-        if (!this.touchingfloor) this.speed.y -= .5;
+        if (!this.touchingfloor) this.speed.y -= .25;
         //update position
         this.pos = this.getCenter();
         this.setPos(this.pos.x, this.pos.y + this.speed.y, this.pos.z);
 
 
-
-
-
-
-
-	}
+    }
 
 
 	@Override
