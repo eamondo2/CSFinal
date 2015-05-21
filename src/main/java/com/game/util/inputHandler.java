@@ -16,8 +16,8 @@ public class inputHandler extends GLFWKeyCallback {
     public void invoke(long window, int key, int scancode, int action, int mods) {
         //handle escape
         keys[key] = action != GLFW_RELEASE;
-        System.out.println(key);
-        System.out.println(keys[key]);
+        //System.out.println(key);
+        //System.out.println(keys[key]);
 
 
     }

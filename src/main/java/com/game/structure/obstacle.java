@@ -18,7 +18,7 @@ public class obstacle implements rect {
 	public ArrayList<Vector3f> verts;
 	public AABB bBox;
 	public String tex;
-	public Vector3f pos;
+	public Vector3f pos = new Vector3f(0, 0, 0);
 
 	public obstacle(String obj, String tex, Vector3f pos) {
 		this.tex = tex;
@@ -27,7 +27,10 @@ public class obstacle implements rect {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.pos = pos;
+		this.bBox = new AABB();
+		this.setPos(pos);
+
+		this.pos = this.getCenter();
 	}
 
 	@Override
@@ -68,19 +71,23 @@ public class obstacle implements rect {
 	@Override
 	public void setPos(Vector3f v) {
 		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
-		for (Vector3f vold : this.verts) {
-			vold.x += (this.pos.x - v.x);
-			vold.y += (this.pos.y - v.y);
-			vold.z += (this.pos.z - v.z);
-			out.add(vold);
+		float dx = v.x - this.pos.x, dy = v.y - this.pos.y;
+		for (Vector3f ve : this.verts) {
+			out.add(new Vector3f(ve.x + dx, ve.y + dy, ve.z));
+
+
 		}
+
+
 		this.verts = out;
-		this.bBox = new AABB();
 		this.bBox.updateAABB(verts);
+
 	}
 
 	@Override
 	public Vector3f getCenter() {
-		return null;
+		float x = (this.bBox.topLeft.x + this.bBox.botRight.x) / 2;
+		float y = (this.bBox.topLeft.y + this.bBox.botRight.y) / 2;
+		return new Vector3f(x, y, 0);
 	}
 }

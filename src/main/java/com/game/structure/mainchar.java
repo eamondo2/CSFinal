@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL11.*;
  * Created by eamon_000 on 5/20/2015.
  */
 public class mainchar implements rect {
-	public Vector3f pos;
+	public Vector3f pos = new Vector3f(0, 0, 0);
 	public Vector3f speed;
 	public ArrayList<Vector3f> verts;
 	public AABB bBox;
@@ -24,7 +24,7 @@ public class mainchar implements rect {
 
 
 	public mainchar(String obj, String tex, Vector3f pos) {
-		this.pos = pos;
+
 		this.tex = tex;
 		//load verts from file to arraylist
 		try {
@@ -32,10 +32,15 @@ public class mainchar implements rect {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.speed = new Vector3f(0, 0, 0);
 		this.bBox = new AABB();
+		this.setPos(pos);
+		this.pos = this.getCenter();
+
+		this.speed = new Vector3f(0, 0, 0);
+
 		this.bBox.updateAABB(verts);
-		System.out.println(verts);
+
+		//System.out.println(verts);
 
 
 	}
@@ -74,8 +79,26 @@ public class mainchar implements rect {
 
 		 */
 
+		float playerBotY = this.bBox.botRight.y;
 
+		if (playerBotY <= 0 || playerBotY + this.speed.y <= 0) {
+			//set player to rest on the floor, cancel speed
+			this.setPos(new Vector3f(0, (0 - this.pos.y), 0));
+			this.speed.y = 0;
+			canJump = true;
+
+
+		} else {
+			//can assume player is in air. add gravity to acceleration, update player position
+			canJump = false;
+			this.speed.y -= .25;
+			this.setPos(new Vector3f(0, this.pos.y + this.speed.y, 0));
+
+		}
+
+		//update
 		this.bBox.updateAABB(this.verts);
+		this.pos = this.getCenter();
 	}
 
 	@Override
@@ -96,14 +119,17 @@ public class mainchar implements rect {
 	@Override
 	public void setPos(Vector3f v) {
 		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
-		for (Vector3f vold : this.verts) {
-			vold.x += (this.pos.x - v.x);
-			vold.y += (this.pos.y - v.y);
-			vold.z += (this.pos.z - v.z);
-			out.add(vold);
+		float dx = v.x - this.pos.x, dy = v.y - this.pos.y;
+		for (Vector3f ve : this.verts) {
+			out.add(new Vector3f(ve.x + dx, ve.y + dy, ve.z));
+
+
 		}
+
+
 		this.verts = out;
-		this.bBox = this.getAABB();
+		this.bBox.updateAABB(verts);
+
 	}
 
 	@Override
@@ -120,7 +146,8 @@ public class mainchar implements rect {
 
 	public void jump() {
 		if (canJump) {
-			this.speed.y -= 10;
+			this.speed.y += 1.5;
+			this.setPos(new Vector3f(0, 0, 0));
 		}
 
 	}

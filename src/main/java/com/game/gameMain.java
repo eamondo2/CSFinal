@@ -117,16 +117,13 @@ public class gameMain {
     public void worldSetup() {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
-	    character = new mainchar("assets/char.obj", "null", new Vector3f(0, 0, 0));
+	    character = new mainchar("assets/char.obj", "null", new Vector3f(0, -1, 0));
 	    floor f = new floor();
-	    obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(2, 1, 0));
+	    obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(2, 10, 0));
 	    renderList.add(o);
 	    renderList.add(f);
 	    renderList.add(character);
 	    physList.add(character);
-
-
-
 
 
     }
@@ -152,7 +149,6 @@ public class gameMain {
     //and bottom called first, so background first.
     public void render() {
         //back
-
 
         //mid
 
