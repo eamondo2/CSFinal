@@ -4,8 +4,8 @@ package com.game;
 
 //imports
 
-import com.game.structure.axes;
-import com.game.structure.mainchar;
+import com.game.math.Vector3f;
+import com.game.structure.*;
 import com.game.util.inputHandler;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
@@ -32,6 +33,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
+	public ArrayList<rect> renderList;
+	public ArrayList<rect> physList;
 	public mainchar character;
 	int WIDTH = 700;
     int HEIGHT = 700;
@@ -112,7 +115,15 @@ public class gameMain {
     }
 
     public void worldSetup() {
-	    character = new mainchar();
+	    renderList = new ArrayList<rect>();
+	    physList = new ArrayList<rect>();
+	    character = new mainchar("assets/char.obj", "null", new Vector3f(0, 0, 0));
+	    floor f = new floor();
+	    obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(2, 1, 0));
+	    renderList.add(o);
+	    renderList.add(f);
+	    renderList.add(character);
+	    physList.add(character);
 
 
 
@@ -146,8 +157,8 @@ public class gameMain {
         //mid
 
 
-
-        new axes().render();
+	    for (rect r : renderList) r.render();
+	    new axes().render();
         //fore
 
     }
@@ -163,17 +174,22 @@ public class gameMain {
         if (inputHandler.keys[GLFW_KEY_D]) glTranslatef(1, 0, 0);
         if(inputHandler.keys[GLFW_KEY_Q]) glRotatef(1.5f, .25f, .75f, 0);
 	    //so very simple addition of speed in ydir
-	    if (inputHandler.keys[GLFW_KEY_SPACE] && character.canJump()) {
-		    character.speed.y += 10;
+	    if (inputHandler.keys[GLFW_KEY_SPACE]) {
+		    character.jump();
 	    }
-        //logic
+
+	    System.out.println(character.speed);
+	    System.out.println(character.bBox.botRight.y);
+	    //logic
 
 
         //transforms
 
 
         //physics concerns go here
-
+	    for (rect r : physList) {
+		    r.update();
+	    }
 
     }
 
