@@ -81,13 +81,16 @@ public class mainchar implements rect {
 
 		float playerBotY = this.bBox.botRight.y;
 
-		if (playerBotY <= 0 || playerBotY + this.speed.y <= 0) {
+		if (playerBotY < 0) {
 			//set player to rest on the floor, cancel speed
 			this.setPos(new Vector3f(0, (0 - this.pos.y), 0));
 			this.speed.y = 0;
 			canJump = true;
 
 
+		} else if (playerBotY == 0) {
+			canJump = true;
+			this.speed.y = 0;
 		} else {
 			//can assume player is in air. add gravity to acceleration, update player position
 			canJump = false;
