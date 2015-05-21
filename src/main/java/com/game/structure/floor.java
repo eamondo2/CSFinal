@@ -3,39 +3,53 @@ package com.game.structure;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.game.util.fileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/20/2015.
  */
 public class floor implements rect {
-	private ArrayList<Vector3f> verts;
-	private AABB bBox;
-	private Vector3f pos;
+    private ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
+    private AABB bBox = new AABB();
+    private Vector3f pos = new Vector3f(0, 0, 0);
+    private String tex = "";
 
-	public floor() {
-		this.verts = new ArrayList<Vector3f>();
+    public floor(String obj, String tex, Vector3f ipos) {
+        this.tex = tex;
+        //load verts from file to arraylist
+        try {
+            this.verts = loadVertFromFile(new File(obj));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.bBox.updateAABB(this.verts);
+        this.pos = this.getCenter();
+        this.setPos(ipos);
+        this.pos = this.getCenter();
 
 	}
 
 
 	@Override
 	public AABB getAABB() {
-		return null;
-	}
+        this.bBox.updateAABB(verts);
+        return this.bBox;
+    }
 
 	@Override
 	public void render() {
-		glColor3f(0, 1, 0);
-		glBegin(GL_QUADS);
-		glVertex3f(-100, -3, 0);
-		glVertex3f(-100, 0, 0);
-		glVertex3f(100, 0, 0);
-		glVertex3f(100, -3, 0);
-		glEnd();
-	}
+        glColor3f(0, 1, 0);
+        glBegin(GL_QUADS);
+        for (Vector3f v : verts) {
+            glVertex3f(v.x, v.y, v.z);
+        }
+        glEnd();
+    }
 
 	@Override
 	public void update() {
@@ -72,6 +86,25 @@ public class floor implements rect {
 
 	@Override
 	public Vector3f getCenter() {
-		return null;
-	}
+        //possible problem spot
+        float x = (this.bBox.topLeft.x + this.bBox.botRight.x) / 2;
+        float y = (this.bBox.topLeft.y + this.bBox.botRight.y) / 2;
+        return new Vector3f(x, y, 0);
+    }
+
+    @Override
+    public String getName() {
+        return "floor";
+    }
+
+    @Override
+    public void renderAABB() {
+        glBegin(GL_POINTS);
+        glColor3f(0, 0, 0);
+        glVertex2f(this.bBox.topLeft.x, this.bBox.topLeft.y);
+        glVertex2f(this.bBox.botRight.x, this.bBox.botRight.y);
+        glEnd();
+    }
+
+
 }

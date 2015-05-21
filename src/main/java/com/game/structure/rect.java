@@ -29,6 +29,10 @@ public interface rect {
 
 	Vector3f getCenter();
 
+    String getName();
+
+    void renderAABB();
+
 
 
 }

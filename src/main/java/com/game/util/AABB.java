@@ -14,7 +14,8 @@ public class AABB {
 	public Vector3f botRight;
 
 	public AABB() {
-
+        this.topLeft = new Vector3f(0, 0, 0);
+        this.botRight = new Vector3f(0, 0, 0);
 
 	}
 

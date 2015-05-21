@@ -35,8 +35,9 @@ public class obstacle implements rect {
 
 	@Override
 	public AABB getAABB() {
-		return null;
-	}
+        this.bBox.updateAABB(verts);
+        return this.bBox;
+    }
 
 	@Override
 	public void render() {
@@ -50,6 +51,11 @@ public class obstacle implements rect {
 
 	@Override
 	public void update() {
+        //move left
+        this.pos = this.getCenter();
+        this.setPos(this.pos.x - .5f, this.pos.y, this.pos.z);
+
+
 
 	}
 
@@ -68,7 +74,11 @@ public class obstacle implements rect {
 		return null;
 	}
 
-	@Override
+    public void setPos(float x, float y, float z) {
+        this.setPos(new Vector3f(x, y, z));
+    }
+
+    @Override
 	public void setPos(Vector3f v) {
 		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
 		float dx = v.x - this.pos.x, dy = v.y - this.pos.y;
@@ -90,4 +100,20 @@ public class obstacle implements rect {
 		float y = (this.bBox.topLeft.y + this.bBox.botRight.y) / 2;
 		return new Vector3f(x, y, 0);
 	}
+
+    @Override
+    public String getName() {
+        return "obstacle";
+    }
+
+    @Override
+    public void renderAABB() {
+        glBegin(GL_POINTS);
+        glColor3f(0, 0, 0);
+        glVertex2f(this.bBox.topLeft.x, this.bBox.topLeft.y);
+        glVertex2f(this.bBox.botRight.x, this.bBox.botRight.y);
+        glEnd();
+    }
+
+
 }

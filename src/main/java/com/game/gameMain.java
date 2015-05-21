@@ -6,6 +6,7 @@ package com.game;
 
 import com.game.math.Vector3f;
 import com.game.structure.*;
+import com.game.util.Physics;
 import com.game.util.inputHandler;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -117,15 +118,15 @@ public class gameMain {
     public void worldSetup() {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
-	    character = new mainchar("assets/char.obj", "null", new Vector3f(0, -1, 0));
-	    floor f = new floor();
-	    obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(2, 10, 0));
-	    renderList.add(o);
+        character = new mainchar("assets/char.obj", "null", new Vector3f(0, 2, 0));
+        floor f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
+        obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0));
+        renderList.add(o);
 	    renderList.add(f);
 	    renderList.add(character);
 	    physList.add(character);
 
-
+        physList.add(o);
     }
 
 
@@ -156,7 +157,7 @@ public class gameMain {
 	    for (rect r : renderList) r.render();
 	    new axes().render();
         //fore
-
+        for (rect r : renderList) r.renderAABB();
     }
 
     //handles frame to frame logic
@@ -183,9 +184,8 @@ public class gameMain {
 
 
         //physics concerns go here
-	    for (rect r : physList) {
-		    r.update();
-	    }
+        for (rect r : physList) r.update();
+        Physics.updatePhysics(physList);
 
     }
 

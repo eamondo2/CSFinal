@@ -15,15 +15,15 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class mainchar implements rect {
 	public Vector3f pos = new Vector3f(0, 0, 0);
-	public Vector3f speed;
-	public ArrayList<Vector3f> verts;
-	public AABB bBox;
-	public String tex;
-	public boolean canJump = true;
+    public boolean touchingfloor = false;
+    public Vector3f speed = new Vector3f(0, 0, 0);
+    public ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
+    public AABB bBox = new AABB();
+    public String tex = " ";
+    public boolean canJump = true;
 
 
-
-	public mainchar(String obj, String tex, Vector3f pos) {
+    public mainchar(String obj, String tex, Vector3f ipos) {
 
 		this.tex = tex;
 		//load verts from file to arraylist
@@ -32,18 +32,13 @@ public class mainchar implements rect {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.bBox = new AABB();
-		this.setPos(pos);
-		this.pos = this.getCenter();
-
-		this.speed = new Vector3f(0, 0, 0);
-
-		this.bBox.updateAABB(verts);
-
-		//System.out.println(verts);
+        this.bBox.updateAABB(this.verts);
+        this.pos = this.getCenter();
+        this.setPos(ipos);
+        this.pos = this.getCenter();
 
 
-	}
+    }
 
 
 	@Override
@@ -63,46 +58,47 @@ public class mainchar implements rect {
 
 	@Override
 	public void update() {
-		//only add to gravity if the player is at y<0;
-		//only allow jumping if player is on ground. e.g bottom y is 0;
-		//if player dips below ground, then set bottom right corner to 0, and speed to 0, and don't add speed.
-		/*
-		pseudocode time
-		if playerboty <=0:
-			set player bot y to 0
-			set player velocity to 0
-			player can jump
-		else:
-			add gravity
-			update player position
-			canjump = false
+        /*
+        if bottom is at 0, don't add gravity. don't set position, just leave it. allow jumping. update position based on speed.
+        if bottom below 0, set bottom to 0. allow jumping, dont add gravity
+        if bottom above 0, dont set position, add gravity, update position based on speed. disallow jumping
 
-		 */
+         */
+        this.bBox.updateAABB(this.verts);
+        Vector3f bottomRight = this.getAABB().botRight;
+        float x = bottomRight.x, y = bottomRight.y;
+        //test for collision
+        if (y < 0 || this.pos.y + this.speed.y < 0) {
+            //below floor
+            System.out.println("BELOW");
+            this.speed.y = 0;
+            this.touchingfloor = true;
+            this.setPos(this.pos.x, 1, this.pos.z);
+        }
+        if (y == 0) {
+            //on floor
+            System.out.println("ON");
+            if (!this.touchingfloor) this.speed.y = 0;
+            this.touchingfloor = true;
+        }
+        if (y > 0) {
+            System.out.println("ABOVE");
+            this.touchingfloor = false;
+        }
+        //add gravity
+        if (!this.touchingfloor) this.speed.y -= .5;
+        //update position
+        this.pos = this.getCenter();
+        this.setPos(this.pos.x, this.pos.y + this.speed.y, this.pos.z);
 
-		float playerBotY = this.bBox.botRight.y;
-
-		if (playerBotY < 0) {
-			//set player to rest on the floor, cancel speed
-			this.setPos(new Vector3f(0, (0 - this.pos.y), 0));
-			this.speed.y = 0;
-			canJump = true;
 
 
-		} else if (playerBotY == 0) {
-			canJump = true;
-			this.speed.y = 0;
-		} else {
-			//can assume player is in air. add gravity to acceleration, update player position
-			canJump = false;
-			this.speed.y -= .25;
-			this.setPos(new Vector3f(0, this.pos.y + this.speed.y, 0));
 
-		}
 
-		//update
-		this.bBox.updateAABB(this.verts);
-		this.pos = this.getCenter();
+
+
 	}
+
 
 	@Override
 	public boolean isStatic() {
@@ -119,9 +115,15 @@ public class mainchar implements rect {
 		return null;
 	}
 
+    public void setPos(float x, float y, float z) {
+        this.setPos(new Vector3f(x, y, z));
+    }
+
 	@Override
 	public void setPos(Vector3f v) {
-		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
+        //not sure if problem
+        this.pos = this.getCenter();
+        ArrayList<Vector3f> out = new ArrayList<Vector3f>();
 		float dx = v.x - this.pos.x, dy = v.y - this.pos.y;
 		for (Vector3f ve : this.verts) {
 			out.add(new Vector3f(ve.x + dx, ve.y + dy, ve.z));
@@ -137,21 +139,37 @@ public class mainchar implements rect {
 
 	@Override
 	public Vector3f getCenter() {
-		float x = (this.bBox.topLeft.x + this.bBox.botRight.x) / 2;
+        //possible problem spot
+        float x = (this.bBox.topLeft.x + this.bBox.botRight.x) / 2;
 		float y = (this.bBox.topLeft.y + this.bBox.botRight.y) / 2;
 		return new Vector3f(x, y, 0);
 	}
 
-	public boolean canJump() {
+    @Override
+    public String getName() {
+        return "mainchar";
+    }
 
-		return canJump;
-	}
+    @Override
+    public void renderAABB() {
+        glBegin(GL_POINTS);
+        glColor3f(0, 0, 0);
+        glVertex2f(this.bBox.topLeft.x, this.bBox.topLeft.y);
+        glVertex2f(this.bBox.botRight.x, this.bBox.botRight.y);
+        glEnd();
+    }
+
+    public boolean canJump() {
+
+        return touchingfloor;
+    }
 
 	public void jump() {
-		if (canJump) {
-			this.speed.y += 1.5;
-			this.setPos(new Vector3f(0, 0, 0));
-		}
+        //possible problem spot
+        if (touchingfloor) {
+            this.speed.y += 1.5;
+
+        }
 
 	}
 }
