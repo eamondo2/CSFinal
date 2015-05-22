@@ -5,7 +5,10 @@ package com.game;
 //imports
 
 import com.game.math.Vector3f;
-import com.game.structure.*;
+import com.game.structure.floor;
+import com.game.structure.mainchar;
+import com.game.structure.obstacle;
+import com.game.structure.rect;
 import com.game.util.Physics;
 import com.game.util.TextureLoader;
 import com.game.util.inputHandler;
@@ -172,11 +175,11 @@ public class gameMain {
 
 
 	    for (rect r : renderList) r.render();
-	    new axes().render();
+	    //new axes().render();
         //fore
         for (rect r : renderList) r.renderAABB();
         if (gameOver) {
-            renderText("GAME OVER " + score);
+            renderText("GAME OVER, score: " + score);
         } else {
             renderText("score: " + score);
         }
@@ -220,6 +223,11 @@ public class gameMain {
             this.renderList = new ArrayList<rect>();
             this.renderList.add(character);
             this.renderList.add(f);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println("SPEED " + character.speed);

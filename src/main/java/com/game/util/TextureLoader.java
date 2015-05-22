@@ -66,7 +66,7 @@ public class TextureLoader {
     }
 
     public static BufferedImage generate(String gen, int fontsize) {
-        BufferedImage image = new BufferedImage(144, 12, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(180, 12, BufferedImage.TYPE_INT_RGB);
 
         Graphics g = image.getGraphics();
         g.setFont(new Font("Dialog", Font.BOLD, fontsize));
@@ -89,14 +89,10 @@ public class TextureLoader {
         glPushMatrix();
         glRotatef(180, 1, 0, 0);
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3f(-19, 5, 0);
-        glTexCoord2f(0, 1);
-        glVertex3f(-19, 10, 0);
-        glTexCoord2f(1, 1);
-        glVertex3f(10, 10, 0);
-        glTexCoord2f(1, 0);
-        glVertex3f(10, 5, 0);
+        glTexCoord2f(0, 0);        glVertex3f(-19, 5, 0);
+        glTexCoord2f(0, 1);        glVertex3f(-19, 10, 0);
+        glTexCoord2f(1, 1);        glVertex3f(10, 10, 0);
+        glTexCoord2f(1, 0);        glVertex3f(10, 5, 0);
         glEnd();
         glPopMatrix();
 

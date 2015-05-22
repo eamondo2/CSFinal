@@ -23,6 +23,11 @@ public class Physics {
                         System.out.println(r.getName() + " against " + or.getName());
                         if (collides(r.getAABB(), or.getAABB())) {
                             gameMain.gameOver = true;
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
 
                         }
 
