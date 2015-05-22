@@ -5,10 +5,7 @@ package com.game;
 //imports
 
 import com.game.math.Vector3f;
-import com.game.structure.floor;
-import com.game.structure.mainchar;
-import com.game.structure.obstacle;
-import com.game.structure.rect;
+import com.game.structure.*;
 import com.game.util.Physics;
 import com.game.util.TextureLoader;
 import com.game.util.inputHandler;
@@ -45,6 +42,7 @@ public class gameMain {
     public int counter = 0;
     public ArrayList<rect> renderList;
 	public ArrayList<rect> physList;
+	public ArrayList<rect> updateList;
 	public mainchar character;
 	int WIDTH = 700;
     int HEIGHT = 700;
@@ -129,7 +127,8 @@ public class gameMain {
     public void worldSetup() {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
-        character = new mainchar("assets/char.obj", "null", new Vector3f(-15, 2, 0));
+	    updateList = new ArrayList<rect>();
+	    character = new mainchar("assets/char.obj", "null", new Vector3f(-15, 2, 0));
         f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
         obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 1);
         renderList.add(o);
@@ -201,6 +200,21 @@ public class gameMain {
             }
         }
 
+	    //Add particle trail to player, to make it seem like you're moving
+	    double randVal = Math.random() * 1;
+
+	    while (randVal < .2) {
+		    randVal = Math.random() * 1;
+		    float scale = (float) (Math.random() * 1.5);
+		    float lSpeed = (float) Math.random() * 1;
+		    float varyYdir = (float) Math.random() * 1;
+		    float lifespan = (float) (Math.random() * 50);
+		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir);
+		    renderList.add(p);
+		    updateList.add(p);
+	    }
+
+
 
 
         //input
@@ -230,8 +244,8 @@ public class gameMain {
             }
         }
 
-        System.out.println("SPEED " + character.speed);
-        System.out.println(character.bBox.botRight.y);
+	    //System.out.println("SPEED " + character.speed);
+	    //System.out.println(character.bBox.botRight.y);
 	    //logic
 
 
@@ -241,16 +255,29 @@ public class gameMain {
         //physics concerns go here
         if (!gameOver) {
             ArrayList<rect> trash = new ArrayList<rect>();
+	        for (rect r : updateList) {
+		        if (r.getAABB().botRight.x < -30 || !r.isAlive()) {
+			        trash.add(r);
+		        }
+		        r.update();
+
+
+	        }
             for (rect r : physList) {
                 if (r.getAABB().botRight.x < -30) {
                     trash.add(r);
-                    System.out.println("TRASHED");
-                    score += 1;
+	                //System.out.println("TRASHED");
+	                //if box is far enough left, delete.
+	                score += 1;
                 }
                 r.update();
             }
             for (rect r : trash) {
-                physList.remove(r);
+	            if (r.getName().equals("particle") && !r.isAlive()) {
+		            updateList.remove(r);
+		            renderList.remove(r);
+	            }
+	            physList.remove(r);
                 renderList.remove(r);
             }
             Physics.updatePhysics(physList);

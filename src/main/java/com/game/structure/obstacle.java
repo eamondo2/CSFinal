@@ -120,5 +120,15 @@ public class obstacle implements rect {
         glEnd();
     }
 
+	@Override
+	public void scale(float iScale) {
+
+	}
+
+	@Override
+	public boolean isAlive() {
+		return false;
+	}
+
 
 }

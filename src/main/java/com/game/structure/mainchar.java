@@ -71,20 +71,20 @@ public class mainchar implements rect {
         //test for collision
         if (y < 0 || this.pos.y + this.speed.y < 0) {
             //below floor
-            System.out.println("BELOW");
-            this.speed.y = 0;
+	        // System.out.println("BELOW");
+	        this.speed.y = 0;
             this.touchingfloor = true;
             this.setPos(this.pos.x, 1, this.pos.z);
         }
         if (y == 0) {
             //on floor
-            System.out.println("ON");
-            if (!this.touchingfloor) this.speed.y = 0;
+	        // System.out.println("ON");
+	        if (!this.touchingfloor) this.speed.y = 0;
             this.touchingfloor = true;
         }
         if (y > 0) {
-            System.out.println("ABOVE");
-            this.touchingfloor = false;
+	        //System.out.println("ABOVE");
+	        this.touchingfloor = false;
         }
         //add gravity
         if (!this.touchingfloor) this.speed.y -= .25;
@@ -108,7 +108,7 @@ public class mainchar implements rect {
 
 	@Override
 	public ArrayList<Vector3f> getVerts() {
-		return null;
+		return this.verts;
 	}
 
     public void setPos(float x, float y, float z) {
@@ -155,7 +155,22 @@ public class mainchar implements rect {
         glEnd();
     }
 
-    public boolean canJump() {
+	@Override
+	public void scale(float iScale) {
+		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
+		for (Vector3f v : this.verts) {
+			out.add(new Vector3f(v.x * iScale, v.y * iScale, v.z * iScale));
+
+		}
+		this.verts = out;
+	}
+
+	@Override
+	public boolean isAlive() {
+		return false;
+	}
+
+	public boolean canJump() {
 
         return touchingfloor;
     }

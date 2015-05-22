@@ -33,6 +33,10 @@ public interface rect {
 
     void renderAABB();
 
+	void scale(float iScale);
+
+	boolean isAlive();
+
 
 
 }

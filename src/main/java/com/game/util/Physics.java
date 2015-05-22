@@ -20,7 +20,7 @@ public class Physics {
             if (r.isCharacter()) {
                 for (rect or : physList) {
                     if (!r.equals(or)) {
-                        System.out.println(r.getName() + " against " + or.getName());
+                        //System.out.println(r.getName() + " against " + or.getName());
                         if (collides(r.getAABB(), or.getAABB())) {
                             gameMain.gameOver = true;
                             try {
