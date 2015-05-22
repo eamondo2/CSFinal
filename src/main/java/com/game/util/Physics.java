@@ -1,5 +1,6 @@
 package com.game.util;
 
+import com.game.gameMain;
 import com.game.math.Vector3f;
 import com.game.structure.rect;
 
@@ -21,12 +22,8 @@ public class Physics {
                     if (!r.equals(or)) {
                         System.out.println(r.getName() + " against " + or.getName());
                         if (collides(r.getAABB(), or.getAABB())) {
-                            System.out.println("HAIL JESUS");
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                            gameMain.gameOver = true;
+
                         }
 
 

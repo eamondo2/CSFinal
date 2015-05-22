@@ -7,6 +7,7 @@ package com.game;
 import com.game.math.Vector3f;
 import com.game.structure.*;
 import com.game.util.Physics;
+import com.game.util.TextureLoader;
 import com.game.util.inputHandler;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -14,6 +15,7 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
@@ -34,6 +36,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
+    public static boolean gameOver = false;
+    public floor f;
+    public int score = 0;
     public int counter = 0;
     public ArrayList<rect> renderList;
 	public ArrayList<rect> physList;
@@ -51,7 +56,9 @@ public class gameMain {
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
         System.out.println(GL_LINE);
-		new gameMain().run();
+
+
+        new gameMain().run();
 
 
 	}
@@ -120,7 +127,7 @@ public class gameMain {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
         character = new mainchar("assets/char.obj", "null", new Vector3f(-15, 2, 0));
-        floor f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
+        f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
         obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 1);
         renderList.add(o);
 	    renderList.add(f);
@@ -128,6 +135,8 @@ public class gameMain {
 	    physList.add(character);
 
         physList.add(o);
+
+
     }
 
 
@@ -143,8 +152,15 @@ public class gameMain {
         glLoadIdentity();
 
 
+
     }
 
+    public void renderText(String s) {
+        BufferedImage b = TextureLoader.generate(s, 15);
+
+        TextureLoader.renderImage(TextureLoader.loadTexture(b));
+
+    }
     //handles rendering, dispatches render calls to all objects that need to be rendered.
     //will have multiple layers for rendering gui/score and the world, and the background
     //background will be static, and the foreground will be animated. Layering is important, as it does rendering based on layers. Topmost is called last, so GUI last
@@ -159,19 +175,27 @@ public class gameMain {
 	    new axes().render();
         //fore
         for (rect r : renderList) r.renderAABB();
+        if (gameOver) {
+            renderText("GAME OVER " + score);
+        } else {
+            renderText("score: " + score);
+        }
+
     }
 
     //handles frame to frame logic
     public void update() {
         //put more objects in
-        counter = (counter < 100 ? counter + 1 : 0);
-        if (Math.random() * 2 + counter > 100) {
-            float f = (float) (Math.random() * 1);
-            if (f < .3) f += .5;
-            else if (f > 2) f -= 1;
-            obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(20, 1, 0), f, (float) ((Math.random() * 1.5)));
-            renderList.add(o);
-            physList.add(o);
+        if (!gameOver) {
+            counter = (counter < 100 ? counter + 1 : 0);
+            if (Math.random() * 2 + counter > 100) {
+                float f = (float) (Math.random() * 1);
+                if (f < .3) f += .5;
+                else if (f > 2) f -= 1;
+                obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(20, 1, 0), f, 1);
+                renderList.add(o);
+                physList.add(o);
+            }
         }
 
 
@@ -188,6 +212,15 @@ public class gameMain {
 	    if (inputHandler.keys[GLFW_KEY_SPACE]) {
 		    character.jump();
 	    }
+        if (inputHandler.keys[GLFW_KEY_SPACE] && gameOver) {
+            gameOver = false;
+            this.score = 0;
+            this.physList = new ArrayList<rect>();
+            this.physList.add(character);
+            this.renderList = new ArrayList<rect>();
+            this.renderList.add(character);
+            this.renderList.add(f);
+        }
 
         System.out.println("SPEED " + character.speed);
         System.out.println(character.bBox.botRight.y);
@@ -198,19 +231,22 @@ public class gameMain {
 
 
         //physics concerns go here
-        ArrayList<rect> trash = new ArrayList<rect>();
-        for (rect r : physList) {
-            if (r.getAABB().botRight.x < -30) {
-                trash.add(r);
-                System.out.println("TRASHED");
+        if (!gameOver) {
+            ArrayList<rect> trash = new ArrayList<rect>();
+            for (rect r : physList) {
+                if (r.getAABB().botRight.x < -30) {
+                    trash.add(r);
+                    System.out.println("TRASHED");
+                    score += 1;
+                }
+                r.update();
             }
-            r.update();
+            for (rect r : trash) {
+                physList.remove(r);
+                renderList.remove(r);
+            }
+            Physics.updatePhysics(physList);
         }
-        for (rect r : trash) {
-            physList.remove(r);
-            renderList.remove(r);
-        }
-        Physics.updatePhysics(physList);
 
     }
 
@@ -228,7 +264,7 @@ public class gameMain {
         worldSetup();
 
         // Set the clear color
-		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0f, 0.0f, 0.0f, 0.0f);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
