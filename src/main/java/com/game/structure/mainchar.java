@@ -48,12 +48,15 @@ public class mainchar implements rect {
 
 	@Override
 	public void render() {
+
 		glColor3f(0, 1, 0);
 		glBegin(GL_QUADS);
 		for (Vector3f v : verts) {
 			glVertex3f(v.x, v.y, v.z);
 		}
 		glEnd();
+
+
 	}
 
 	@Override

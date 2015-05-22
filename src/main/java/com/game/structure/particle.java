@@ -54,12 +54,14 @@ public class particle implements rect {
 
 	@Override
 	public void render() {
+
 		glColor3f(1, 0, 0);
 		glBegin(GL_QUADS);
 		for (Vector3f v : verts) {
 			glVertex3f(v.x, v.y, v.z);
 		}
 		glEnd();
+
 	}
 
 	@Override
@@ -67,7 +69,9 @@ public class particle implements rect {
 		this.lifespan -= 1;
 		if (this.lifespan <= 0) this.isAlive = false;
 		this.setPos(this.pos.x - this.lspeed, this.pos.y + (Math.random() <= .5 ? -yVary : yVary), 0);
-		this.bBox.updateAABB(this.verts);
+        this.bBox.updateAABB(this.verts);
+
+
 
 
 	}

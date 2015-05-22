@@ -36,6 +36,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
+    public boolean hardMode = false;
     public static boolean gameOver = false;
     public floor f;
     public int score = 0;
@@ -56,8 +57,6 @@ public class gameMain {
 
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
-        System.out.println(GL_LINE);
-
 
         new gameMain().run();
 
@@ -128,7 +127,7 @@ public class gameMain {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
 	    updateList = new ArrayList<rect>();
-	    character = new mainchar("assets/char.obj", "null", new Vector3f(-15, 2, 0));
+	    character = new mainchar("assets/char.obj", "null", new Vector3f(-22, 2, 0));
         f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
         obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 1);
         renderList.add(o);
@@ -148,7 +147,7 @@ public class gameMain {
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(-20, 20, -20, 20, 10.f, -10.f);
+        glOrtho(-30, 30, -30, 30, 100.f, -100.f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -174,27 +173,45 @@ public class gameMain {
 
 
 	    for (rect r : renderList) r.render();
-	    //new axes().render();
+	    new axes().render();
         //fore
         for (rect r : renderList) r.renderAABB();
         if (gameOver) {
-            renderText("GAME OVER, score: " + score);
+            renderText("GAME OVER, Score: " + score);
         } else {
-            renderText("score: " + score);
+            if (this.hardMode) {
+                renderText("Score: " + score+" HARDMODE");
+            }
+            else{
+                renderText("Score: "+score);
+            }
+        }
+
+        //attempt to introduce jitter
+        if(hardMode) {
+
+            float theta = .1f;
+            System.out.println(coinFlip());
+            glRotatef((Math.random() <= 5 ? -theta : theta), (coinFlip() ? 1 : 0), (coinFlip() ? 1 : 0), (coinFlip() ? 1 : 0));
         }
 
     }
 
     //handles frame to frame logic
+    public boolean coinFlip(){
+
+        return (Math.random()>=.5f);
+    }
     public void update() {
         //put more objects in
+        if(score>15) this.hardMode = true;
         if (!gameOver) {
             counter = (counter < 100 ? counter + 1 : 0);
             if (Math.random() * 2 + counter > 100) {
                 float f = (float) (Math.random() * 1);
                 if (f < .3) f += .5;
                 else if (f > 2) f -= 1;
-                obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(20, 1, 0), f, 1);
+                obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(35, 1, 0), f, 1);
                 renderList.add(o);
                 physList.add(o);
             }
@@ -205,9 +222,9 @@ public class gameMain {
 
 	    while (randVal < .2) {
 		    randVal = Math.random() * 1;
-		    float scale = (float) (Math.random() * 1.5);
-		    float lSpeed = (float) Math.random() * 1;
-		    float varyYdir = (float) Math.random() * 1;
+		    float scale = (float) (Math.random() * 2);
+		    float lSpeed = (float) Math.random() * 1+.5f;
+		    float varyYdir = (float) Math.random() * .5f;
 		    float lifespan = (float) (Math.random() * 50);
 		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir);
 		    renderList.add(p);
@@ -237,6 +254,8 @@ public class gameMain {
             this.renderList = new ArrayList<rect>();
             this.renderList.add(character);
             this.renderList.add(f);
+            this.hardMode = false;
+            glLoadIdentity();
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
