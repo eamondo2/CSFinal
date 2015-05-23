@@ -1,7 +1,5 @@
 package com.game.util;
 
-import com.game.gameMain;
-
 import javax.sound.sampled.*;
 import javax.sound.sampled.LineEvent.Type;
 import java.io.File;
@@ -38,11 +36,11 @@ public class playClip {
             clip.open(audioInputStream);
             try {
                 clip.start();
-                gameMain.musicPlaying = true;
+                //gameMain.musicPlaying = true;
                 listener.waitUntilDone();
             } finally {
                 clip.close();
-                gameMain.musicPlaying = false;
+                //gameMain.musicPlaying = false;
             }
         } finally {
             audioInputStream.close();

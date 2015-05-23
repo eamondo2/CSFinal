@@ -41,7 +41,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
-    Thread musicThread;
+    Thread musicThread = new Thread();
     static File mainMusic = new File("assets/AdhesiveWombat_8bitAdventure.wav");
     static File hardmodeFile = new File("assets/AdhesiveWombat_Downforce.wav");
     public static File musicFile = mainMusic;
@@ -51,6 +51,7 @@ public class gameMain {
     public boolean xrotLock = false;
     public boolean hardMode = false;
     public static boolean gameOver = false;
+    public boolean gameOversecond = false;
     public floor f;
     public int score = 0;
     public int counter = 0;
@@ -255,11 +256,11 @@ public class gameMain {
     }
     public void update() {
         //update hardmode status, change music
-        if(score>10 && this.hardMode == false) {
+        if(score>10 && !this.hardMode) {
             this.hardMode = true;
             musicFile = hardmodeFile;
-            this.stopStartMusic();
-
+            this.musicThread.stop();
+            //musicPlaying  = false;
         }
         //put more objects in
         if (!gameOver) {
@@ -305,6 +306,7 @@ public class gameMain {
 	    }
         if (inputHandler.keys[GLFW_KEY_SPACE] && gameOver) {
             gameOver = false;
+            gameOversecond = false;
             this.score = 0;
             this.physList = new ArrayList<rect>();
             this.physList.add(character);
@@ -313,7 +315,8 @@ public class gameMain {
             this.renderList.add(f);
             this.hardMode = false;
             musicFile = mainMusic;
-            this.stopStartMusic();
+            this.musicThread.stop();
+            musicPlaying = false;
             glLoadIdentity();
             try {
                 Thread.sleep(100);
@@ -347,6 +350,7 @@ public class gameMain {
 	                //System.out.println("TRASHED");
 	                //if box is far enough left, delete.
 	                score += 1;
+                    scoreSound();
                 }
                 r.update();
             }
@@ -360,7 +364,33 @@ public class gameMain {
             }
             Physics.updatePhysics(physList);
         }
-        //play music?
+        //edge event for playing game over sound
+        if(gameOver && !this.gameOversecond){
+            new Thread(new Runnable() {
+                // The wrapper thread is unnecessary, unless it blocks on the
+                // Clip finishing; see comments.
+                public void run() {
+                    try {
+                        playClip.play(new File("assets/gameover.wav"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedAudioFileException e) {
+                        e.printStackTrace();
+                    } catch (LineUnavailableException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            this.musicThread.stop();
+            this.gameOversecond = true;
+
+        }
+
+
+        //play music
+        if(!this.musicThread.isAlive()) musicPlaying = false;
         if(!musicPlaying && !gameOver) {
             musicThread = new Thread(new Runnable() {
                 // The wrapper thread is unnecessary, unless it blocks on the
@@ -379,19 +409,20 @@ public class gameMain {
                     }
                 }
             });
-            musicThread.start();
             musicPlaying = true;
+            musicThread.start();
+
         }
-        if(musicPlaying && gameOver){ musicThread.stop(); musicPlaying = false;}
+
     }
-    public void stopStartMusic(){
-        this.musicThread.stop();
-        musicThread = new Thread(new Runnable() {
+
+    private void scoreSound() {
+        new Thread(new Runnable() {
             // The wrapper thread is unnecessary, unless it blocks on the
             // Clip finishing; see comments.
             public void run() {
                 try {
-                    playClip.play(gameMain.musicFile);
+                    playClip.play(new File("assets/scoreSound.wav"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (UnsupportedAudioFileException e) {
@@ -402,9 +433,11 @@ public class gameMain {
                     e.printStackTrace();
                 }
             }
-        });
-        musicThread.start();
+        }).start();
+
+
     }
+
 
     public void loop() {
 		// This line is critical for LWJGL's interoperation with GLFW's
