@@ -9,13 +9,18 @@ import com.game.structure.*;
 import com.game.util.Physics;
 import com.game.util.TextureLoader;
 import com.game.util.inputHandler;
+import com.game.util.playClip;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
@@ -36,6 +41,14 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public class gameMain {
+    Thread musicThread;
+    static File mainMusic = new File("assets/AdhesiveWombat_8bitAdventure.wav");
+    static File hardmodeFile = new File("assets/AdhesiveWombat_Downforce.wav");
+    public static File musicFile = mainMusic;
+    public Vector3f hardmodeRotations = new Vector3f(0,0,0);
+    public static boolean musicPlaying = false;
+    public boolean zrotLock = false;
+    public boolean xrotLock = false;
     public boolean hardMode = false;
     public static boolean gameOver = false;
     public floor f;
@@ -50,13 +63,15 @@ public class gameMain {
     //Where to begin?
 	//beginnings of lwjgl implementation.
 	private GLFWErrorCallback errorCall;
-    private float rot = 0;
     private inputHandler keyCall;
     private long window;
+    private int flipcounter = 0;
 
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		System.out.println("Hello World!");
+        String PATH_TO_LIBS = System.getProperty("user.dir")+"/native";
+        System.setProperty("org.lwjgl.librarypath", PATH_TO_LIBS);
 
         new gameMain().run();
 
@@ -73,9 +88,11 @@ public class gameMain {
 
 			glfwDestroyWindow(window);
 			keyCall.release();
+            this.musicThread.stop();
 		} finally {
 			glfwTerminate();
 			errorCall.release();
+
 		}
 	}
 
@@ -190,9 +207,43 @@ public class gameMain {
         //attempt to introduce jitter
         if(hardMode) {
 
-            float theta = .1f;
-            System.out.println(coinFlip());
-            glRotatef((Math.random() <= 5 ? -theta : theta), (coinFlip() ? 1 : 0), (coinFlip() ? 1 : 0), (coinFlip() ? 1 : 0));
+           //rotate within extents on all axes
+
+            if(this.hardmodeRotations.z > 40)this.zrotLock = true;
+            if(this.hardmodeRotations.z < -40 && this.zrotLock)this.zrotLock = false;
+            if(this.zrotLock){
+                this.hardmodeRotations.z-=1;
+            } else{
+                this.hardmodeRotations.z+=1;
+            }
+
+            if(this.hardmodeRotations.x > (50))this.xrotLock = true;
+            if(this.hardmodeRotations.x < (-50) && this.xrotLock)this.xrotLock = false;
+            if(this.xrotLock){
+                this.hardmodeRotations.x-=1;
+            } else{
+                this.hardmodeRotations.x+=1;
+            }
+
+
+
+
+
+
+            //hardmodeRotations defines the current rotations per axis.
+            //when  the rotations are above 10, switch the increment to negative
+            //only rotate on the axis currently true, e.g x or y or z
+            //only increment by one per each axis per frame
+
+            glLoadIdentity();
+
+            //System.out.println(hardmodeRotations);
+            glRotatef(this.hardmodeRotations.z, 0, 1, 0);
+            glRotatef(this.hardmodeRotations.x, 1, 0, 0);
+
+
+
+
         }
 
     }
@@ -203,8 +254,14 @@ public class gameMain {
         return (Math.random()>=.5f);
     }
     public void update() {
+        //update hardmode status, change music
+        if(score>10 && this.hardMode == false) {
+            this.hardMode = true;
+            musicFile = hardmodeFile;
+            this.stopStartMusic();
+
+        }
         //put more objects in
-        if(score>15) this.hardMode = true;
         if (!gameOver) {
             counter = (counter < 100 ? counter + 1 : 0);
             if (Math.random() * 2 + counter > 100) {
@@ -255,6 +312,8 @@ public class gameMain {
             this.renderList.add(character);
             this.renderList.add(f);
             this.hardMode = false;
+            musicFile = mainMusic;
+            this.stopStartMusic();
             glLoadIdentity();
             try {
                 Thread.sleep(100);
@@ -301,9 +360,51 @@ public class gameMain {
             }
             Physics.updatePhysics(physList);
         }
-
+        //play music?
+        if(!musicPlaying && !gameOver) {
+            musicThread = new Thread(new Runnable() {
+                // The wrapper thread is unnecessary, unless it blocks on the
+                // Clip finishing; see comments.
+                public void run() {
+                    try {
+                        playClip.play(gameMain.musicFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedAudioFileException e) {
+                        e.printStackTrace();
+                    } catch (LineUnavailableException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            musicThread.start();
+            musicPlaying = true;
+        }
+        if(musicPlaying && gameOver){ musicThread.stop(); musicPlaying = false;}
     }
-
+    public void stopStartMusic(){
+        this.musicThread.stop();
+        musicThread = new Thread(new Runnable() {
+            // The wrapper thread is unnecessary, unless it blocks on the
+            // Clip finishing; see comments.
+            public void run() {
+                try {
+                    playClip.play(gameMain.musicFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedAudioFileException e) {
+                    e.printStackTrace();
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        musicThread.start();
+    }
 
     public void loop() {
 		// This line is critical for LWJGL's interoperation with GLFW's
