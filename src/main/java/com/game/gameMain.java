@@ -67,7 +67,8 @@ public class gameMain {
 	private GLFWErrorCallback errorCall;
     private inputHandler keyCall;
     private long window;
-    private int flipcounter = 0;
+    private boolean hardModeoverride;
+    private boolean eKeyedge = false;
 
 
     public static void main(String[] args) {
@@ -219,17 +220,17 @@ public class gameMain {
             if(this.hardmodeRotations.z > 40)this.zrotLock = true;
             if(this.hardmodeRotations.z < -40 && this.zrotLock)this.zrotLock = false;
             if(this.zrotLock){
-                this.hardmodeRotations.z-=1;
+                this.hardmodeRotations.z-=.5;
             } else{
-                this.hardmodeRotations.z+=1;
+                this.hardmodeRotations.z+=.5;
             }
 
             if(this.hardmodeRotations.x > (50))this.xrotLock = true;
             if(this.hardmodeRotations.x < (-50) && this.xrotLock)this.xrotLock = false;
             if(this.xrotLock){
-                this.hardmodeRotations.x-=1;
+                this.hardmodeRotations.x-=.5;
             } else{
-                this.hardmodeRotations.x+=1;
+                this.hardmodeRotations.x+=.5;
             }
 
 
@@ -262,7 +263,7 @@ public class gameMain {
     }
     public void update() {
         //update hardmode status, change music
-        if(score>1 && !hardMode) {
+        if((score>15 && !hardMode ) || hardModeoverride && !hardMode) {
             hardMode = true;
             musicFile = hardmodeFile;
             this.musicThread.stop();
@@ -291,7 +292,7 @@ public class gameMain {
 		    float lSpeed = (float) Math.random() * 1+.5f;
 		    float varyYdir = (float) Math.random() * .5f;
 		    float lifespan = (float) (Math.random() * 50);
-		    particle p = new particle("assets/particle.obj",new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, 0, 1,1);
+		    particle p = new particle("assets/particle.obj",new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, (float) (.5f*Math.random()), .75f,1);
 		    renderList.add(p);
 		    updateList.add(p);
 	    }
@@ -315,6 +316,8 @@ public class gameMain {
             System.out.println("ShouldClose");
         }
         if (inputHandler.keys[GLFW_KEY_A]) glTranslatef(-1, 0, 0);
+        if(!inputHandler.keys[GLFW_KEY_E]) eKeyedge = false;
+        if(inputHandler.keys[GLFW_KEY_E] && !eKeyedge){ hardModeoverride = !hardModeoverride; eKeyedge = true;}
         if (inputHandler.keys[GLFW_KEY_D]) glTranslatef(1, 0, 0);
         if(inputHandler.keys[GLFW_KEY_Q]) glRotatef(1.5f, .25f, .75f, 0);
 	    //so very simple addition of speed in ydir
