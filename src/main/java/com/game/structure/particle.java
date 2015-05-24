@@ -14,7 +14,10 @@ import static org.lwjgl.opengl.GL11.*;
  * Created by eamon_000 on 5/21/2015.
  */
 public class particle implements rect {
-	private boolean isAlive = true;
+    private final float blue;
+    private final float green;
+    private final float red;
+    private boolean isAlive = true;
 	private float yVary;
 	private float scale = 0;
 	private float lspeed = 0;
@@ -25,8 +28,8 @@ public class particle implements rect {
 	private ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
 
 
-	public particle(Vector3f ipos, float lifespan, float scale, float lspeed, float yVary) {
-
+	public particle(Vector3f ipos, float lifespan, float scale, float lspeed, float yVary, float red, float green, float blue) {
+        this.red = red;this.green = green;this.blue = blue;
 		//load verts from file to arraylist
 		try {
 			this.verts = loadVertFromFile(new File(mesh));
@@ -55,7 +58,7 @@ public class particle implements rect {
 	@Override
 	public void render() {
 
-		glColor3f(1, 0, 0);
+		glColor3f(red, green, blue);
 		glBegin(GL_QUADS);
 		for (Vector3f v : verts) {
 			glVertex3f(v.x, v.y, v.z);
@@ -143,6 +146,7 @@ public class particle implements rect {
 			out.add(new Vector3f(v.x * iScale, v.y * iScale, v.z * iScale));
 
 		}
+
 		this.verts = out;
 	}
 }

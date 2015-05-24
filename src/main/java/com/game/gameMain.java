@@ -49,13 +49,14 @@ public class gameMain {
     public static boolean musicPlaying = false;
     public boolean zrotLock = false;
     public boolean xrotLock = false;
-    public boolean hardMode = false;
+    public static boolean hardMode = false;
     public static boolean gameOver = false;
     public boolean gameOversecond = false;
     public floor f;
     public int score = 0;
     public int counter = 0;
     public ArrayList<rect> renderList;
+    public ArrayList<rect> bgRenderList;
 	public ArrayList<rect> physList;
 	public ArrayList<rect> updateList;
 	public mainchar character;
@@ -145,9 +146,10 @@ public class gameMain {
 	    renderList = new ArrayList<rect>();
 	    physList = new ArrayList<rect>();
 	    updateList = new ArrayList<rect>();
+        bgRenderList = new ArrayList<rect>();
 	    character = new mainchar("assets/char.obj", "null", new Vector3f(-22, 2, 0));
         f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
-        obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 1);
+        obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 0,0,1);
         renderList.add(o);
 	    renderList.add(f);
 	    renderList.add(character);
@@ -186,18 +188,22 @@ public class gameMain {
     //and bottom called first, so background first.
     public void render() {
         //back
+        glPushMatrix();
+        glTranslatef(0,0,1);
+        for(rect r:bgRenderList)r.render();
+        glPopMatrix();
         //test
         //mid
 
 
 	    for (rect r : renderList) r.render();
-	    new axes().render();
+	    //new axes().render();
         //fore
         for (rect r : renderList) r.renderAABB();
         if (gameOver) {
             renderText("GAME OVER, Score: " + score);
         } else {
-            if (this.hardMode) {
+            if (hardMode) {
                 renderText("Score: " + score+" HARDMODE");
             }
             else{
@@ -256,8 +262,8 @@ public class gameMain {
     }
     public void update() {
         //update hardmode status, change music
-        if(score>10 && !this.hardMode) {
-            this.hardMode = true;
+        if(score>19 && !hardMode) {
+            hardMode = true;
             musicFile = hardmodeFile;
             this.musicThread.stop();
             //musicPlaying  = false;
@@ -269,7 +275,7 @@ public class gameMain {
                 float f = (float) (Math.random() * 1);
                 if (f < .3) f += .5;
                 else if (f > 2) f -= 1;
-                obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(35, 1, 0), f, 1);
+                obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(35, 1, 0), f, 0, 0,1);
                 renderList.add(o);
                 physList.add(o);
             }
@@ -284,10 +290,20 @@ public class gameMain {
 		    float lSpeed = (float) Math.random() * 1+.5f;
 		    float varyYdir = (float) Math.random() * .5f;
 		    float lifespan = (float) (Math.random() * 50);
-		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir);
+		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 1, 0, 0);
 		    renderList.add(p);
 		    updateList.add(p);
 	    }
+       for(int x = 0; x<10; x++) {
+
+           float scale = 10;
+           float lSpeed = (float) Math.random() * 1 + .5f;
+           float varyYdir = (float) Math.random() * 1f;
+           float lifespan = (float) (Math.random() * 50+100);
+           particle p = new particle(new Vector3f(30, 10, (float) -.1), 1000, scale, .5f, varyYdir,1, (float) (Math.random()*.5),0);
+           bgRenderList.add(p);
+           updateList.add(p);
+       }
 
 
 
@@ -313,10 +329,13 @@ public class gameMain {
             this.renderList = new ArrayList<rect>();
             this.renderList.add(character);
             this.renderList.add(f);
-            this.hardMode = false;
-            musicFile = mainMusic;
-            this.musicThread.stop();
-            musicPlaying = false;
+            if(hardMode) {
+                musicFile = mainMusic;
+                this.musicThread.stop();
+                musicPlaying = false;
+            }
+            hardMode = false;
+
             glLoadIdentity();
             try {
                 Thread.sleep(100);
@@ -358,6 +377,7 @@ public class gameMain {
 	            if (r.getName().equals("particle") && !r.isAlive()) {
 		            updateList.remove(r);
 		            renderList.remove(r);
+                    if(bgRenderList.contains(r)) bgRenderList.remove(r);
 	            }
 	            physList.remove(r);
                 renderList.remove(r);
@@ -383,7 +403,7 @@ public class gameMain {
                     }
                 }
             }).start();
-            this.musicThread.stop();
+            //this.musicThread.stop();
             this.gameOversecond = true;
 
         }

@@ -1,5 +1,6 @@
 package com.game.structure;
 
+import com.game.gameMain;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
@@ -16,13 +17,15 @@ import static org.lwjgl.opengl.GL11.*;
 public class obstacle implements rect {
     public float leftSpeed = 0;
     public float blue = 1;
+    public float red = 0;
+    public float green = 0;
     public ArrayList<Vector3f> verts;
 	public AABB bBox;
 	public String tex;
 	public Vector3f pos = new Vector3f(0, 0, 0);
 
-    public obstacle(String obj, String tex, Vector3f pos, float leftSpeed, float blue) {
-        this.blue = blue;
+    public obstacle(String obj, String tex, Vector3f pos, float leftSpeed, float red, float blue, float green) {
+        this.blue = blue;this.red = red;this.green = green;
         this.leftSpeed = leftSpeed;
         this.tex = tex;
 		try {
@@ -32,8 +35,8 @@ public class obstacle implements rect {
 		}
 		this.bBox = new AABB();
 		this.setPos(pos);
-
 		this.pos = this.getCenter();
+
 	}
 
 	@Override
@@ -44,7 +47,7 @@ public class obstacle implements rect {
 
 	@Override
 	public void render() {
-        glColor3f(0, 0, blue);
+        glColor3f(red, blue, green);
         glBegin(GL_QUADS);
 		for (Vector3f v : verts) {
 			glVertex3f(v.x, v.y, v.z);
@@ -56,7 +59,7 @@ public class obstacle implements rect {
 	public void update() {
         //move left
         this.pos = this.getCenter();
-        this.setPos(this.pos.x - leftSpeed, this.pos.y, this.pos.z);
+        this.setPos(this.pos.x - leftSpeed+(gameMain.hardMode?-.5f:0), this.pos.y, this.pos.z);
         this.bBox.updateAABB(this.verts);
 
 
@@ -122,7 +125,12 @@ public class obstacle implements rect {
 
 	@Override
 	public void scale(float iScale) {
+        ArrayList<Vector3f> out = new ArrayList<Vector3f>();
+        for (Vector3f v : this.verts) {
+            out.add(new Vector3f(v.x * iScale, v.y * iScale, v.z * iScale));
 
+        }
+        this.verts = out;
 	}
 
 	@Override
