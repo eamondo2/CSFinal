@@ -262,7 +262,7 @@ public class gameMain {
     }
     public void update() {
         //update hardmode status, change music
-        if(score>19 && !hardMode) {
+        if(score>1 && !hardMode) {
             hardMode = true;
             musicFile = hardmodeFile;
             this.musicThread.stop();
@@ -274,6 +274,7 @@ public class gameMain {
             if (Math.random() * 2 + counter > 100) {
                 float f = (float) (Math.random() * 1);
                 if (f < .3) f += .5;
+
                 else if (f > 2) f -= 1;
                 obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(35, 1, 0), f, 0, 0,1);
                 renderList.add(o);
@@ -290,7 +291,7 @@ public class gameMain {
 		    float lSpeed = (float) Math.random() * 1+.5f;
 		    float varyYdir = (float) Math.random() * .5f;
 		    float lifespan = (float) (Math.random() * 50);
-		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, 0, 1);
+		    particle p = new particle("assets/particle.obj",new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, 0, 1,1);
 		    renderList.add(p);
 		    updateList.add(p);
 	    }
@@ -300,7 +301,7 @@ public class gameMain {
          float scale = (float) (20*Math.random()+5);
          float lSpeed = (float) Math.random() * 1 ;
          float varyYdir = (float) Math.random() * 50f;
-         particle p = new particle(new Vector3f(30, varyYdir, (float) -.1), 400+((float)Math.random()*50), scale, lSpeed, 0,1, (float) (Math.random()*.5),0);
+         particle p = new particle("assets/bgPart.obj",new Vector3f(30, varyYdir, (float) -.1), 400+((float)Math.random()*50), scale, lSpeed, 0,1, (float) (Math.random()*.5),0, (float) (Math.random()*2));
          bgRenderList.add(p);
          updateList.add(p);
 
@@ -319,7 +320,9 @@ public class gameMain {
 	    //so very simple addition of speed in ydir
 	    if (inputHandler.keys[GLFW_KEY_SPACE]) {
 		    character.jump();
+
 	    }
+
         if (inputHandler.keys[GLFW_KEY_SPACE] && gameOver) {
             gameOver = false;
             gameOversecond = false;
@@ -369,7 +372,7 @@ public class gameMain {
 	                //System.out.println("TRASHED");
 	                //if box is far enough left, delete.
 	                score += 1;
-                    scoreSound();
+                    playSFX("assets/scoreSound.wav");
                 }
                 r.update();
             }
@@ -386,24 +389,7 @@ public class gameMain {
         }
         //edge event for playing game over sound
         if(gameOver && !this.gameOversecond){
-            new Thread(new Runnable() {
-                // The wrapper thread is unnecessary, unless it blocks on the
-                // Clip finishing; see comments.
-                public void run() {
-                    try {
-                        playClip.play(new File("assets/gameover.wav"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedAudioFileException e) {
-                        e.printStackTrace();
-                    } catch (LineUnavailableException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-            //this.musicThread.stop();
+            playSFX("assets/gameover.wav");
             this.gameOversecond = true;
 
         }
@@ -436,13 +422,13 @@ public class gameMain {
 
     }
 
-    private void scoreSound() {
+    public static void playSFX(final String s) {
         new Thread(new Runnable() {
             // The wrapper thread is unnecessary, unless it blocks on the
             // Clip finishing; see comments.
             public void run() {
                 try {
-                    playClip.play(new File("assets/scoreSound.wav"));
+                    playClip.play(new File(s));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (UnsupportedAudioFileException e) {
@@ -457,6 +443,8 @@ public class gameMain {
 
 
     }
+
+
 
 
     public void loop() {

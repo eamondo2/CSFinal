@@ -1,5 +1,6 @@
 package com.game.structure;
 
+import com.game.gameMain;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
@@ -14,6 +15,7 @@ import static org.lwjgl.opengl.GL11.*;
  * Created by eamon_000 on 5/21/2015.
  */
 public class particle implements rect {
+    private final float zDepth;
     private final float blue;
     private final float green;
     private final float red;
@@ -28,7 +30,9 @@ public class particle implements rect {
 	private ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
 
 
-	public particle(Vector3f ipos, float lifespan, float scale, float lspeed, float yVary, float red, float green, float blue) {
+	public particle(String obj, Vector3f ipos, float lifespan, float scale, float lspeed, float yVary, float red, float green, float blue, float zDepth) {
+        this.zDepth = zDepth;
+        this.mesh = obj;
         this.red = red;this.green = green;this.blue = blue;
 		//load verts from file to arraylist
 		try {
@@ -57,13 +61,15 @@ public class particle implements rect {
 
 	@Override
 	public void render() {
-
+        glPushMatrix();
+        glTranslatef(0,0,zDepth);
 		glColor3f(red, green, blue);
 		glBegin(GL_QUADS);
 		for (Vector3f v : verts) {
 			glVertex3f(v.x, v.y, v.z);
 		}
 		glEnd();
+        glPopMatrix();
 
 	}
 
@@ -71,7 +77,7 @@ public class particle implements rect {
 	public void update() {
 		this.lifespan -= 1;
 		if (this.lifespan <= 0) this.isAlive = false;
-		this.setPos(this.pos.x - this.lspeed, this.pos.y + (Math.random() <= .5 ? -yVary : yVary), 0);
+		this.setPos((float) (this.pos.x - this.lspeed-(gameMain.hardMode?-.4:0)), this.pos.y + (Math.random() <= .5 ? -yVary : yVary), 0);
         this.bBox.updateAABB(this.verts);
 
 

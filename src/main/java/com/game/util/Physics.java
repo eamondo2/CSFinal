@@ -24,7 +24,7 @@ public class Physics {
                         if (collides(r.getAABB(), or.getAABB())) {
                             gameMain.gameOver = true;
                             try {
-                                Thread.sleep(10);
+                                Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }

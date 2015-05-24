@@ -59,7 +59,7 @@ public class obstacle implements rect {
 	public void update() {
         //move left
         this.pos = this.getCenter();
-        this.setPos(this.pos.x - leftSpeed+(gameMain.hardMode?-.5f:0), this.pos.y, this.pos.z);
+        this.setPos(this.pos.x - leftSpeed+(gameMain.hardMode?-.2f:0), this.pos.y, this.pos.z);
         this.bBox.updateAABB(this.verts);
 
 

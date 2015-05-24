@@ -1,5 +1,6 @@
 package com.game.structure;
 
+import com.game.gameMain;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
@@ -182,6 +183,7 @@ public class mainchar implements rect {
         //possible problem spot
         if (touchingfloor) {
             this.speed.y += 1.5;
+            gameMain.playSFX("assets/jump.wav");
 
         }
 
