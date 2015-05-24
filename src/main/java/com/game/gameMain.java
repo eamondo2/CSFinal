@@ -263,7 +263,7 @@ public class gameMain {
     }
     public void update() {
         //update hardmode status, change music
-        if((score>15 && !hardMode ) || hardModeoverride && !hardMode) {
+        if( hardModeoverride && !hardMode||(score>15 && !hardMode )) {
             hardMode = true;
             musicFile = hardmodeFile;
             this.musicThread.stop();
@@ -317,7 +317,7 @@ public class gameMain {
         }
         if (inputHandler.keys[GLFW_KEY_A]) glTranslatef(-1, 0, 0);
         if(!inputHandler.keys[GLFW_KEY_E]) eKeyedge = false;
-        if(inputHandler.keys[GLFW_KEY_E] && !eKeyedge){ hardModeoverride = !hardModeoverride; eKeyedge = true;}
+        if(inputHandler.keys[GLFW_KEY_E] && !eKeyedge){ hardModeoverride = !hardModeoverride; eKeyedge = true;System.out.println(this.hardModeoverride);}
         if (inputHandler.keys[GLFW_KEY_D]) glTranslatef(1, 0, 0);
         if(inputHandler.keys[GLFW_KEY_Q]) glRotatef(1.5f, .25f, .75f, 0);
 	    //so very simple addition of speed in ydir
@@ -335,12 +335,8 @@ public class gameMain {
             this.renderList = new ArrayList<rect>();
             this.renderList.add(character);
             this.renderList.add(f);
-            if(hardMode) {
-                musicFile = mainMusic;
-                this.musicThread.stop();
-                musicPlaying = false;
-            }
-            hardMode = false;
+
+            if(!hardModeoverride)hardMode = false;
 
             glLoadIdentity();
             try {
@@ -394,6 +390,22 @@ public class gameMain {
         if(gameOver && !this.gameOversecond){
             playSFX("assets/gameover.wav");
             this.gameOversecond = true;
+            glPushMatrix();
+            glTranslatef(0,0,-1);
+            glBegin(GL_QUADS);
+            glColor3f(1,0,0);
+            glVertex2f(-30, -30);
+            glVertex2f(-30, 30);
+            glVertex2f(30, 30);
+            glVertex2f(30, -30);
+            glEnd();
+            glPopMatrix();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
 
         }
 
