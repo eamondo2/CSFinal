@@ -290,20 +290,20 @@ public class gameMain {
 		    float lSpeed = (float) Math.random() * 1+.5f;
 		    float varyYdir = (float) Math.random() * .5f;
 		    float lifespan = (float) (Math.random() * 50);
-		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 1, 0, 0);
+		    particle p = new particle(new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, 0, 1);
 		    renderList.add(p);
 		    updateList.add(p);
 	    }
-       for(int x = 0; x<10; x++) {
+        //add Background render list
 
-           float scale = 10;
-           float lSpeed = (float) Math.random() * 1 + .5f;
-           float varyYdir = (float) Math.random() * 1f;
-           float lifespan = (float) (Math.random() * 50+100);
-           particle p = new particle(new Vector3f(30, 10, (float) -.1), 1000, scale, .5f, varyYdir,1, (float) (Math.random()*.5),0);
-           bgRenderList.add(p);
-           updateList.add(p);
-       }
+
+         float scale = (float) (20*Math.random()+5);
+         float lSpeed = (float) Math.random() * 1 ;
+         float varyYdir = (float) Math.random() * 50f;
+         particle p = new particle(new Vector3f(30, varyYdir, (float) -.1), 400+((float)Math.random()*50), scale, lSpeed, 0,1, (float) (Math.random()*.5),0);
+         bgRenderList.add(p);
+         updateList.add(p);
+
 
 
 
