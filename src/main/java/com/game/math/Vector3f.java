@@ -18,7 +18,7 @@ public class Vector3f {
     public Vector3f() {
     }
 
-    public Vector3f normalise(Vector3f dest) {
+    public void normalise(Vector3f dest) {
         float l = this.length();
         if(dest == null) {
             dest = new Vector3f(this.x / l, this.y / l, this.z / l);
@@ -26,15 +26,12 @@ public class Vector3f {
             dest.set(this.x / l, this.y / l, this.z / l);
         }
 
-        return dest;
     }
-    public Vector3f normalise() {
+    public void normalise() {
         float l = this.length();
         this.x/=l;
         this.y/=l;
         this.z/=l;
-
-        return this;
 
     }
     public final float length() {

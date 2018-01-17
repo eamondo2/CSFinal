@@ -23,10 +23,7 @@ public class AABB {
     }
 
 
-	public Vector3f getMTV(AABB other) {
 
-		return null;
-	}
 
 	public void updateAABB(ArrayList<Vector3f> vin) {
 		AABB out = new AABB();

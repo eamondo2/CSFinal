@@ -1,4 +1,4 @@
-package com.game.structure;
+package com.game.structures;
 
 import com.game.math.Vector3f;
 import com.game.util.AABB;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public interface rect {
-	//suuper basic rect class for handling the player and the obstacles.
+public interface GenericRect {
+	//suuper basic GenericRect class for handling the player and the obstacles.
 	//in code defined quads
 	//
 

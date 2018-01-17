@@ -1,11 +1,11 @@
-package com.game.structure;
+package com.game.structures;
 
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public class axes {
+public class Axes {
 
 	public void render() {
 		glBegin(1);

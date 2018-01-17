@@ -11,12 +11,11 @@ import java.util.ArrayList;
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public class fileLoader {
-	public static ArrayList<String> readFromFile(File f) throws IOException {
+public class FileLoader {
+	private static ArrayList<String> readFromFile(File f) throws IOException {
 		ArrayList<String> out = new ArrayList<String>();
-		BufferedReader br = null;
 		String sCurrentLine;
-		br = new BufferedReader(new FileReader(f));
+		BufferedReader br = new BufferedReader(new FileReader(f));
 		while ((sCurrentLine = br.readLine()) != null) {
 			out.add(sCurrentLine);
 		}
@@ -26,7 +25,7 @@ public class fileLoader {
 		return out;
 	}
 
-	public static ArrayList<Vector3f> vertize(ArrayList<String> sIn) {
+	private static ArrayList<Vector3f> verticize(ArrayList<String> sIn) {
 		ArrayList<Vector3f> out = new ArrayList<Vector3f>();
 		for (String s : sIn) {
 			String[] broken = s.split(",");
@@ -39,7 +38,7 @@ public class fileLoader {
 	}
 
 	public static ArrayList<Vector3f> loadVertFromFile(File f) throws IOException {
-		return vertize((readFromFile(f)));
+		return verticize((readFromFile(f)));
 
 	}
 

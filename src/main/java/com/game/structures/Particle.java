@@ -1,6 +1,6 @@
-package com.game.structure;
+package com.game.structures;
 
-import com.game.gameMain;
+import com.game.GameMain;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
@@ -8,31 +8,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.game.util.fileLoader.loadVertFromFile;
+import static com.game.util.FileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/21/2015.
  */
-public class particle implements rect {
+public class Particle implements GenericRect {
     private final float zDepth;
     private final float blue;
     private final float green;
     private final float red;
     private boolean isAlive = true;
 	private float yVary;
-	private float scale = 0;
 	private float lspeed = 0;
-	private String mesh = "assets/particle.obj";
 	private Vector3f pos = new Vector3f(0, 0, 0);
 	private AABB bBox = new AABB();
 	private float lifespan = 0;
 	private ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
 
 
-	public particle(String obj, Vector3f ipos, float lifespan, float scale, float lspeed, float yVary, float red, float green, float blue, float zDepth) {
+	public Particle(String obj, Vector3f ipos, float lifespan, float scale, float lspeed, float yVary, float red, float green, float blue, float zDepth) {
         this.zDepth = zDepth;
-        this.mesh = obj;
+		String mesh = obj;
         this.red = red;this.green = green;this.blue = blue;
 		//load verts from file to arraylist
 		try {
@@ -41,7 +39,7 @@ public class particle implements rect {
 			e.printStackTrace();
 		}
 		this.lifespan = lifespan;
-		this.scale = scale;
+		float scale1 = scale;
 		this.lspeed = lspeed;
 		this.yVary = yVary;
 		this.scale(scale);
@@ -77,7 +75,7 @@ public class particle implements rect {
 	public void update() {
 		this.lifespan -= 1;
 		if (this.lifespan <= 0) this.isAlive = false;
-		this.setPos((float) (this.pos.x - this.lspeed-(gameMain.hardMode?-.4:0)), this.pos.y + (Math.random() <= .5 ? -yVary : yVary), 0);
+		this.setPos((float) (this.pos.x - this.lspeed-(GameMain.hardMode?-.4:0)), this.pos.y + (Math.random() <= .5 ? -yVary : yVary), 0);
         this.bBox.updateAABB(this.verts);
 
 
@@ -137,7 +135,7 @@ public class particle implements rect {
 
 	@Override
 	public String getName() {
-		return "particle";
+		return "Particle";
 	}
 
 	@Override

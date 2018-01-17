@@ -5,15 +5,14 @@ import javax.sound.sampled.LineEvent.Type;
 import java.io.File;
 import java.io.IOException;
 
-//lifted from http://stackoverflow.com/a/577926
+//Credit to http://stackoverflow.com/a/577926
 
-public class playClip {
+public class SoundUtil {
     public static void play(File clipFile) throws IOException,
             UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
         class AudioListener implements LineListener {
             private boolean done = false;
 
-            @Override
             public synchronized void update(LineEvent event) {
                 Type eventType = event.getType();
                 if (eventType == Type.STOP || eventType == Type.CLOSE) {
@@ -36,11 +35,11 @@ public class playClip {
             clip.open(audioInputStream);
             try {
                 clip.start();
-                //gameMain.musicPlaying = true;
+                //GameMain.musicPlaying = true;
                 listener.waitUntilDone();
             } finally {
                 clip.close();
-                //gameMain.musicPlaying = false;
+                //GameMain.musicPlaying = false;
             }
         } finally {
             audioInputStream.close();

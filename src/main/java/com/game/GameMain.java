@@ -5,11 +5,11 @@ package com.game;
 //imports
 
 import com.game.math.Vector3f;
-import com.game.structure.*;
+import com.game.structures.*;
 import com.game.util.Physics;
 import com.game.util.TextureLoader;
-import com.game.util.inputHandler;
-import com.game.util.playClip;
+import com.game.util.InputHandler;
+import com.game.util.SoundUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWvidmode;
@@ -40,7 +40,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 //TODO: Make lighting a thing. Like walls with pools of light. Dunno.
 
 
-public class gameMain {
+public class GameMain {
     Thread musicThread = new Thread();
     static File mainMusic = new File("assets/AdhesiveWombat_8bitAdventure.wav");
     static File hardmodeFile = new File("assets/AdhesiveWombat_Downforce.wav");
@@ -52,37 +52,36 @@ public class gameMain {
     public static boolean hardMode = false;
     public static boolean gameOver = false;
     public boolean gameOversecond = false;
-    public floor f;
+    public Floor f;
     public int score = 0;
     public int counter = 0;
-    public ArrayList<rect> renderList;
-    public ArrayList<rect> bgRenderList;
-	public ArrayList<rect> physList;
-	public ArrayList<rect> updateList;
-	public mainchar character;
+    public ArrayList<GenericRect> renderList;
+    public ArrayList<GenericRect> bgRenderList;
+	public ArrayList<GenericRect> physList;
+	public ArrayList<GenericRect> updateList;
+	public MainChar character;
 	int WIDTH = 700;
     int HEIGHT = 700;
     //Where to begin?
 	//beginnings of lwjgl implementation.
 	private GLFWErrorCallback errorCall;
-    private inputHandler keyCall;
+    private InputHandler keyCall;
     private long window;
     private boolean hardModeoverride;
     private boolean eKeyedge = false;
 
 
     public static void main(String[] args) {
-		System.out.println("Hello World!");
         String PATH_TO_LIBS = System.getProperty("user.dir")+"/native";
         System.setProperty("org.lwjgl.librarypath", PATH_TO_LIBS);
 
-        new gameMain().run();
+        new GameMain().run();
 
 
 	}
 
 	public void run() {
-		System.out.println("HI THERE " + Sys.getVersion());
+		System.out.println( Sys.getVersion());
 
 
 		try {
@@ -118,7 +117,7 @@ public class gameMain {
 			throw new RuntimeException("Failed to create the GLFW window");
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        keyCall = new inputHandler();
+        keyCall = new InputHandler();
         glfwSetKeyCallback(window, keyCall);
 
 
@@ -144,13 +143,13 @@ public class gameMain {
     }
 
     public void worldSetup() {
-	    renderList = new ArrayList<rect>();
-	    physList = new ArrayList<rect>();
-	    updateList = new ArrayList<rect>();
-        bgRenderList = new ArrayList<rect>();
-	    character = new mainchar("assets/char.obj", "null", new Vector3f(-22, 2, 0));
-        f = new floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
-        obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 0,0,1);
+	    renderList = new ArrayList<GenericRect>();
+	    physList = new ArrayList<GenericRect>();
+	    updateList = new ArrayList<GenericRect>();
+        bgRenderList = new ArrayList<GenericRect>();
+	    character = new MainChar("assets/char.obj", "null", new Vector3f(-22, 2, 0));
+        f = new Floor("assets/floor.obj", "null", new Vector3f(0, -1, 0));
+        Obstacle o = new Obstacle("assets/obstacle.obj", "null", new Vector3f(15, 1, 0), .5f, 0,0,1);
         renderList.add(o);
 	    renderList.add(f);
 	    renderList.add(character);
@@ -191,16 +190,16 @@ public class gameMain {
         //back
         glPushMatrix();
         glTranslatef(0,0,1);
-        for(rect r:bgRenderList)r.render();
+        for(GenericRect r:bgRenderList)r.render();
         glPopMatrix();
         //test
         //mid
 
 
-	    for (rect r : renderList) r.render();
-	    //new axes().render();
+	    for (GenericRect r : renderList) r.render();
+	    //new Axes().render();
         //fore
-        for (rect r : renderList) r.renderAABB();
+        for (GenericRect r : renderList) r.renderAABB();
         if (gameOver) {
             renderText("GAME OVER, Score: " + score);
         } else {
@@ -215,7 +214,7 @@ public class gameMain {
         //attempt to introduce jitter
         if(hardMode) {
 
-           //rotate within extents on all axes
+           //rotate within extents on all Axes
 
             if(this.hardmodeRotations.z > 40)this.zrotLock = true;
             if(this.hardmodeRotations.z < -40 && this.zrotLock)this.zrotLock = false;
@@ -238,10 +237,10 @@ public class gameMain {
 
 
 
-            //hardmodeRotations defines the current rotations per axis.
+            //hardmodeRotations defines the current rotations per Axis.
             //when  the rotations are above 10, switch the increment to negative
-            //only rotate on the axis currently true, e.g x or y or z
-            //only increment by one per each axis per frame
+            //only rotate on the Axis currently true, e.g x or y or z
+            //only increment by one per each Axis per frame
 
             glLoadIdentity();
 
@@ -277,13 +276,13 @@ public class gameMain {
                 if (f < .3) f += .5;
 
                 else if (f > 2) f -= 1;
-                obstacle o = new obstacle("assets/obstacle.obj", "null", new Vector3f(35, 1, 0), f, 0, 0,1);
+                Obstacle o = new Obstacle("assets/obstacle.obj", "null", new Vector3f(35, 1, 0), f, 0, 0,1);
                 renderList.add(o);
                 physList.add(o);
             }
         }
 
-	    //Add particle trail to player, to make it seem like you're moving
+	    //Add Particle trail to player, to make it seem like you're moving
 	    double randVal = Math.random() * 1;
 
 	    while (randVal < .2) {
@@ -292,7 +291,7 @@ public class gameMain {
 		    float lSpeed = (float) Math.random() * 1+.5f;
 		    float varyYdir = (float) Math.random() * .5f;
 		    float lifespan = (float) (Math.random() * 50);
-		    particle p = new particle("assets/particle.obj",new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, (float) (.5f*Math.random()), .75f,1);
+		    Particle p = new Particle("assets/particle.obj",new Vector3f(character.pos.x, character.pos.y, 0), lifespan, scale, lSpeed, varyYdir, 0, (float) (.5f*Math.random()), .75f,1);
 		    renderList.add(p);
 		    updateList.add(p);
 	    }
@@ -302,7 +301,7 @@ public class gameMain {
          float scale = (float) (20*Math.random()+5);
          float lSpeed = (float) Math.random() * 1 ;
          float varyYdir = (float) Math.random() * 50f;
-         particle p = new particle("assets/bgPart.obj",new Vector3f(30, varyYdir, (float) -.1), 400+((float)Math.random()*50), scale, lSpeed, 0,1, (float) (Math.random()*.5),0, (float) (Math.random()*2));
+         Particle p = new Particle("assets/bgPart.obj",new Vector3f(30, varyYdir, (float) -.1), 400+((float)Math.random()*50), scale, lSpeed, 0,1, (float) (Math.random()*.5),0, (float) (Math.random()*2));
          bgRenderList.add(p);
          updateList.add(p);
 
@@ -311,28 +310,27 @@ public class gameMain {
 
 
         //input
-        if (inputHandler.keys[GLFW_KEY_ESCAPE]) {
+        if (InputHandler.keys[GLFW_KEY_ESCAPE]) {
             glfwSetWindowShouldClose(window, GL_TRUE);
-            System.out.println("ShouldClose");
         }
-        if (inputHandler.keys[GLFW_KEY_A]) glTranslatef(-1, 0, 0);
-        if(!inputHandler.keys[GLFW_KEY_E]) eKeyedge = false;
-        if(inputHandler.keys[GLFW_KEY_E] && !eKeyedge){ hardModeoverride = !hardModeoverride; eKeyedge = true;System.out.println(this.hardModeoverride);}
-        if (inputHandler.keys[GLFW_KEY_D]) glTranslatef(1, 0, 0);
-        if(inputHandler.keys[GLFW_KEY_Q]) glRotatef(1.5f, .25f, .75f, 0);
+        if (InputHandler.keys[GLFW_KEY_A]) glTranslatef(-1, 0, 0);
+        if(!InputHandler.keys[GLFW_KEY_E]) eKeyedge = false;
+        if(InputHandler.keys[GLFW_KEY_E] && !eKeyedge){ hardModeoverride = !hardModeoverride; eKeyedge = true;}
+        if (InputHandler.keys[GLFW_KEY_D]) glTranslatef(1, 0, 0);
+        if(InputHandler.keys[GLFW_KEY_Q]) glRotatef(1.5f, .25f, .75f, 0);
 	    //so very simple addition of speed in ydir
-	    if (inputHandler.keys[GLFW_KEY_SPACE]) {
+	    if (InputHandler.keys[GLFW_KEY_SPACE]) {
 		    character.jump();
 
 	    }
 
-        if (inputHandler.keys[GLFW_KEY_SPACE] && gameOver) {
+        if (InputHandler.keys[GLFW_KEY_SPACE] && gameOver) {
             gameOver = false;
             gameOversecond = false;
             this.score = 0;
-            this.physList = new ArrayList<rect>();
+            this.physList = new ArrayList<GenericRect>();
             this.physList.add(character);
-            this.renderList = new ArrayList<rect>();
+            this.renderList = new ArrayList<GenericRect>();
             this.renderList.add(character);
             this.renderList.add(f);
 
@@ -356,8 +354,8 @@ public class gameMain {
 
         //physics concerns go here
         if (!gameOver) {
-            ArrayList<rect> trash = new ArrayList<rect>();
-	        for (rect r : updateList) {
+            ArrayList<GenericRect> trash = new ArrayList<GenericRect>();
+	        for (GenericRect r : updateList) {
 		        if (r.getAABB().botRight.x < -30 || !r.isAlive()) {
 			        trash.add(r);
 		        }
@@ -365,7 +363,7 @@ public class gameMain {
 
 
 	        }
-            for (rect r : physList) {
+            for (GenericRect r : physList) {
                 if (r.getAABB().botRight.x < -30) {
                     trash.add(r);
 	                //System.out.println("TRASHED");
@@ -375,8 +373,8 @@ public class gameMain {
                 }
                 r.update();
             }
-            for (rect r : trash) {
-	            if (r.getName().equals("particle") && !r.isAlive()) {
+            for (GenericRect r : trash) {
+	            if (r.getName().equals("Particle") && !r.isAlive()) {
 		            updateList.remove(r);
 		            renderList.remove(r);
                     if(bgRenderList.contains(r)) bgRenderList.remove(r);
@@ -418,7 +416,7 @@ public class gameMain {
                 // Clip finishing; see comments.
                 public void run() {
                     try {
-                        playClip.play(gameMain.musicFile);
+                        SoundUtil.play(GameMain.musicFile);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (UnsupportedAudioFileException e) {
@@ -443,7 +441,7 @@ public class gameMain {
             // Clip finishing; see comments.
             public void run() {
                 try {
-                    playClip.play(new File(s));
+                    SoundUtil.play(new File(s));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (UnsupportedAudioFileException e) {

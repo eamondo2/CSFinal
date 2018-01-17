@@ -16,11 +16,7 @@ public class Vector2f {
 	public Vector2f() {
 	}
 
-	public void normalize() {
-		//normalizes this vector
-	}
-
-	public String toString() {
+    public String toString() {
 		return (x + " " + y);
 	}
 

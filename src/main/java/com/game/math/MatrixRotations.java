@@ -15,7 +15,7 @@ public class MatrixRotations {
         float costheta = (float) Math.cos(angrad);
         float sintheta = (float) Math.sin(angrad);
         /*
-        Rotation of PointB around PointA about axis represented by Uv
+        Rotation of PointB around PointA about Axis represented by Uv
         R(theta) = costheta+uv.x^2(1-costheta) | uv.x*uv.y(1-costheta)-uv.z(sintheta) | uv.x*uv.z(1-costheta)+uv.y*sintheta
                    uv.y*uv.x(1-costheta)+uv.z*sintheta | costheta+uv.y^2(1-costheta) | uv.y*uv.z(1-costheta)-uv.x*sintheta
                    uv.z*uv.x(1-costheta)-uv.y(sintheta) | uv.z*uv.y(1-costheta)+uv.x(sintheta) | costheta+uv.z^2(1-costheta)
@@ -79,7 +79,7 @@ public class MatrixRotations {
         float costheta = (float) Math.cos(angrad);
         float sintheta = (float) Math.sin(angrad);
         /*
-        Rotation of PointB around PointA about axis represented by Uv
+        Rotation of PointB around PointA about Axis represented by Uv
         R(theta) = costheta+uv.x^2(1-costheta) | uv.x*uv.y(1-costheta)-uv.z(sintheta) | uv.x*uv.z(1-costheta)+uv.y*sintheta
                    uv.y*uv.x(1-costheta)+uv.z*sintheta | costheta+uv.y^2(1-costheta) | uv.y*uv.z(1-costheta)-uv.x*sintheta
                    uv.z*uv.x(1-costheta)-uv.y(sintheta) | uv.z*uv.y(1-costheta)+uv.x(sintheta) | costheta+uv.z^2(1-costheta)

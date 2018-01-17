@@ -1,6 +1,6 @@
-package com.game.structure;
+package com.game.structures;
 
-import com.game.gameMain;
+import com.game.GameMain;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
@@ -8,25 +8,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.game.util.fileLoader.loadVertFromFile;
+import static com.game.util.FileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public class mainchar implements rect {
-	public Vector3f pos = new Vector3f(0, 0, 0);
-    public boolean touchingfloor = false;
-    public Vector3f speed = new Vector3f(0, 0, 0);
-    public ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
-    public AABB bBox = new AABB();
-    public String tex = " ";
-    public boolean canJump = true;
+public class MainChar implements GenericRect {
+	private Vector3f pos;
+    private boolean touchingfloor = false;
+    private Vector3f speed = new Vector3f(0, 0, 0);
+    private ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
+    private AABB bBox = new AABB();
+	public boolean canJump = true;
 
 
-    public mainchar(String obj, String tex, Vector3f ipos) {
+    public MainChar(String obj, String tex, Vector3f ipos) {
 
-		this.tex = tex;
+		String tex1 = tex;
 		//load verts from file to arraylist
 		try {
 			this.verts = loadVertFromFile(new File(obj));
@@ -34,7 +33,8 @@ public class mainchar implements rect {
 			e.printStackTrace();
 		}
         this.bBox.updateAABB(this.verts);
-        this.pos = this.getCenter();
+		pos = new Vector3f(0, 0, 0);
+		this.pos = this.getCenter();
         this.setPos(ipos);
         this.pos = this.getCenter();
 
@@ -74,14 +74,14 @@ public class mainchar implements rect {
         float x = bottomRight.x, y = bottomRight.y;
         //test for collision
         if (y < 0 || this.pos.y + this.speed.y < 0) {
-            //below floor
+            //below Floor
 	        // System.out.println("BELOW");
 	        this.speed.y = 0;
             this.touchingfloor = true;
             this.setPos(this.pos.x, 1, this.pos.z);
         }
         if (y == 0) {
-            //on floor
+            //on Floor
 	        // System.out.println("ON");
 	        if (!this.touchingfloor) this.speed.y = 0;
             this.touchingfloor = true;
@@ -147,7 +147,7 @@ public class mainchar implements rect {
 
     @Override
     public String getName() {
-        return "mainchar";
+        return "MainChar";
     }
 
     @Override
@@ -183,7 +183,7 @@ public class mainchar implements rect {
         //possible problem spot
         if (touchingfloor) {
             this.speed.y += 1.5;
-            gameMain.playSFX("assets/jump.wav");
+            GameMain.playSFX("assets/jump.wav");
 
         }
 

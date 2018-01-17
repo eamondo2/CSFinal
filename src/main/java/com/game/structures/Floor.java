@@ -1,4 +1,4 @@
-package com.game.structure;
+package com.game.structures;
 
 import com.game.math.Vector3f;
 import com.game.util.AABB;
@@ -7,20 +7,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.game.util.fileLoader.loadVertFromFile;
+import static com.game.util.FileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public class floor implements rect {
+public class Floor implements GenericRect {
     private ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
     private AABB bBox = new AABB();
     private Vector3f pos = new Vector3f(0, 0, 0);
-    private String tex = "";
 
-    public floor(String obj, String tex, Vector3f ipos) {
-        this.tex = tex;
+    public Floor(String obj, String tex, Vector3f ipos) {
+        String tex1 = tex;
         //load verts from file to arraylist
         try {
             this.verts = loadVertFromFile(new File(obj));
@@ -94,7 +93,7 @@ public class floor implements rect {
 
     @Override
     public String getName() {
-        return "floor";
+        return "Floor";
     }
 
     @Override

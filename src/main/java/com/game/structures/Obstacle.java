@@ -1,6 +1,6 @@
-package com.game.structure;
+package com.game.structures;
 
-import com.game.gameMain;
+import com.game.GameMain;
 import com.game.math.Vector3f;
 import com.game.util.AABB;
 
@@ -8,26 +8,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.game.util.fileLoader.loadVertFromFile;
+import static com.game.util.FileLoader.loadVertFromFile;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by eamon_000 on 5/20/2015.
  */
-public class obstacle implements rect {
-    public float leftSpeed = 0;
-    public float blue = 1;
-    public float red = 0;
-    public float green = 0;
-    public ArrayList<Vector3f> verts;
-	public AABB bBox;
-	public String tex;
-	public Vector3f pos = new Vector3f(0, 0, 0);
+public class Obstacle implements GenericRect {
 
-    public obstacle(String obj, String tex, Vector3f pos, float leftSpeed, float red, float blue, float green) {
+    private float leftSpeed, blue, red, green;
+    private ArrayList<Vector3f> verts;
+	private AABB bBox;
+    private Vector3f pos;
+
+    public Obstacle(String obj, String tex, Vector3f pos, float leftSpeed, float red, float blue, float green) {
         this.blue = blue;this.red = red;this.green = green;
         this.leftSpeed = leftSpeed;
-        this.tex = tex;
+        String tex1 = tex;
 		try {
 			this.verts = loadVertFromFile(new File(obj));
 		} catch (IOException e) {
@@ -35,7 +32,8 @@ public class obstacle implements rect {
 		}
 		this.bBox = new AABB();
 		this.setPos(pos);
-		this.pos = this.getCenter();
+        this.pos = new Vector3f(0, 0, 0);
+        this.pos = this.getCenter();
 
 	}
 
@@ -59,7 +57,7 @@ public class obstacle implements rect {
 	public void update() {
         //move left
         this.pos = this.getCenter();
-        this.setPos(this.pos.x - leftSpeed+(gameMain.hardMode?-.2f:0), this.pos.y, this.pos.z);
+        this.setPos(this.pos.x - leftSpeed+(GameMain.hardMode?-.2f:0), this.pos.y, this.pos.z);
         this.bBox.updateAABB(this.verts);
 
 
@@ -82,7 +80,7 @@ public class obstacle implements rect {
 		return null;
 	}
 
-    public void setPos(float x, float y, float z) {
+    private void setPos(float x, float y, float z) {
         this.setPos(new Vector3f(x, y, z));
     }
 
@@ -111,7 +109,7 @@ public class obstacle implements rect {
 
     @Override
     public String getName() {
-        return "obstacle";
+        return "Obstacle";
     }
 
     @Override

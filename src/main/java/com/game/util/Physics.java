@@ -1,8 +1,8 @@
 package com.game.util;
 
-import com.game.gameMain;
+import com.game.GameMain;
 import com.game.math.Vector3f;
-import com.game.structure.rect;
+import com.game.structures.GenericRect;
 
 import java.util.ArrayList;
 
@@ -15,14 +15,14 @@ public class Physics {
     //This will consist of simple AABB collision code. Will make a method to get collision info from obj2D
     //implementation of SAT collision code and MTV check
 
-    public static void updatePhysics(ArrayList<rect> physList) {
-        for (rect r : physList) {
+    public static void updatePhysics(ArrayList<GenericRect> physList) {
+        for (GenericRect r : physList) {
             if (r.isCharacter()) {
-                for (rect or : physList) {
+                for (GenericRect or : physList) {
                     if (!r.equals(or)) {
                         //System.out.println(r.getName() + " against " + or.getName());
                         if (collides(r.getAABB(), or.getAABB())) {
-                            gameMain.gameOver = true;
+                            GameMain.gameOver = true;
 
 
                         }
@@ -36,11 +36,7 @@ public class Physics {
 
     }
 
-    public static boolean Intersects(rect a, rect b) {
 
-
-        return false;
-    }
 
     public static boolean collides(AABB a, AABB b) {
 
@@ -65,13 +61,6 @@ public class Physics {
         return false;
     }
     */
-
-    public void findEdgeNormals(rect r) {
-
-    }
-
-
-
 
 
 }
